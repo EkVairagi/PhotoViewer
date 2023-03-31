@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PhotoViewer</string>
+    <string name="screen_photo_details_text">Photo Details</string>
+    <string name="popular_text">Popular</string>
+    <string name="search_results_for_str">Search results for %1s</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="no_network_connection">No Network Connection</string>
+    <string name="retry">Retry</string>
+    <string name="search_photos">Search Photos</string>
+
+</resources>
