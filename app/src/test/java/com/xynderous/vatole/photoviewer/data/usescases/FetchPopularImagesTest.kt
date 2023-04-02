@@ -29,13 +29,13 @@ class FetchPopularImagesTest {
     }
 
     @Test
-    fun `test invoking SearchPhotosUsecase gives list of photos`() = runBlocking {
+    fun `test invoking FetchPopularPhotosUsecase gives list of photos`() = runBlocking {
         // Given
         val usecase = FetchPopularImages(repository)
         val givenPhotos = MockTestUtil.createPhotos(3)
 
         // When
-        coEvery { repository.searchPhotos(any(), any(), any()) }
+        coEvery { repository.loadPhotos(any(), any(), any()) }
             .returns(flowOf(Resource.success(givenPhotos)))
 
         // Invoke

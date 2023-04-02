@@ -9,7 +9,8 @@ class FetchPopularImages @Inject constructor(private val repository: PhotosRepos
     suspend operator fun invoke(
         pageNumber: Int = 1,
         pageSize: Int = AppConstants.QUERY_PAGE_SIZE,
-        orderBy :String = "popular"
-    ) = repository.loadPhotos(pageNumber, pageSize, orderBy)
+        orderBy: String = "popular"
+    ) = repository.loadPhotos(pageNumber = pageNumber, pageSize = pageSize, orderBy = orderBy)
 
 }
+

@@ -10,6 +10,6 @@ class SearchPhotos @Inject constructor(private val repository: PhotosRepository)
         query:String,
         pageNumber: Int = 1,
         pageSize: Int = AppConstants.QUERY_PAGE_SIZE
-    ) = repository.searchPhotos(query, pageNumber, pageSize)
+    ) = repository.searchPhotos(query = query, pageNumber = pageNumber, pageSize = pageSize)
 
 }
