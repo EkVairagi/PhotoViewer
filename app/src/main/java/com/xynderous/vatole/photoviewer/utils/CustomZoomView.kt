@@ -10,9 +10,8 @@ import androidx.annotation.Nullable
 import androidx.appcompat.widget.AppCompatImageView
 
 
-
-class CustomZoomView: AppCompatImageView, View.OnTouchListener,
-    GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
+class CustomZoomView : AppCompatImageView, View.OnTouchListener,
+    GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     //Construction details
     private var myContext: Context? = null
     private var myScaleDetector: ScaleGestureDetector? = null
@@ -47,18 +46,20 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
         attrs,
         defStyleAttr
     )
-    private fun constructionDetails(context: Context){
+
+    private fun constructionDetails(context: Context) {
         super.setClickable(true)
-        myContext=context
-        myScaleDetector= ScaleGestureDetector(context,ScalingListener())
-        myMatrix=Matrix()
-        matrixValue=FloatArray(10)
+        myContext = context
+        myScaleDetector = ScaleGestureDetector(context, ScalingListener())
+        myMatrix = Matrix()
+        matrixValue = FloatArray(10)
         imageMatrix = myMatrix
         scaleType = ScaleType.MATRIX
         myGestureDetector = GestureDetector(context, this)
         setOnTouchListener(this)
     }
-    private inner class ScalingListener : ScaleGestureDetector.SimpleOnScaleGestureListener(){
+
+    private inner class ScalingListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
         override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
             zoomMode = 2
@@ -68,11 +69,11 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             var mScaleFactor = detector.scaleFactor
             val previousScale = mScaleFactor
-            presentScale*=mScaleFactor
+            presentScale *= mScaleFactor
             if (presentScale > maximumScale) {
                 presentScale = maximumScale
                 mScaleFactor = maximumScale / previousScale
-            }else if (presentScale < minimumScale) {
+            } else if (presentScale < minimumScale) {
                 presentScale = minimumScale
                 mScaleFactor = minimumScale / previousScale
             }
@@ -94,6 +95,7 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
 
         }
     }
+
     private fun putToScreen() {
         presentScale = 1f
         val factor: Float
@@ -118,18 +120,30 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
         originalHeight = mViewedHeight - 2 * repeatedYSpace
         imageMatrix = myMatrix
     }
+
     fun fittedTranslation() {
         myMatrix?.getValues(matrixValue)
         val translationX =
             matrixValue?.get(Matrix.MTRANS_X)
         val translationY =
             matrixValue?.get(Matrix.MTRANS_Y)
-        val fittedTransX = getFittedTranslation(translationX ?: 0.0f, mViewedWidth.toFloat(), originalWidth * presentScale)
-        val fittedTransY = getFittedTranslation(translationY ?: 0.0f, mViewedHeight.toFloat(), originalHeight * presentScale)
-        if (fittedTransX != 0f || fittedTransY != 0f) myMatrix?.postTranslate(fittedTransX, fittedTransY)
+        val fittedTransX = getFittedTranslation(
+            translationX ?: 0.0f,
+            mViewedWidth.toFloat(),
+            originalWidth * presentScale
+        )
+        val fittedTransY = getFittedTranslation(
+            translationY ?: 0.0f,
+            mViewedHeight.toFloat(),
+            originalHeight * presentScale
+        )
+        if (fittedTransX != 0f || fittedTransY != 0f) myMatrix?.postTranslate(
+            fittedTransX,
+            fittedTransY
+        )
     }
 
-    private fun getFittedTranslation(mTranslate: Float,vSize: Float, cSize: Float): Float {
+    private fun getFittedTranslation(mTranslate: Float, vSize: Float, cSize: Float): Float {
         val minimumTranslation: Float
         val maximumTranslation: Float
         if (cSize <= vSize) {
@@ -147,6 +161,7 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
         }
         return 0F
     }
+
     private fun getFixDragTrans(delta: Float, viewedSize: Float, detailSize: Float): Float {
         return if (detailSize <= viewedSize) {
             0F
@@ -163,6 +178,7 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
             putToScreen()
         }
     }
+
     override fun onTouch(mView: View, mMouseEvent: MotionEvent): Boolean {
         myScaleDetector?.onTouchEvent(mMouseEvent)
         myGestureDetector?.onTouchEvent(mMouseEvent)
@@ -182,8 +198,13 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
             MotionEvent.ACTION_MOVE -> if (zoomMode == 1) {
                 val changeInX = currentPoint.x - lastPoint.x
                 val changeInY = currentPoint.y - lastPoint.y
-                val fixedTranslationX = getFixDragTrans(changeInX, mViewedWidth.toFloat(), originalWidth * presentScale)
-                val fixedTranslationY = getFixDragTrans(changeInY, mViewedHeight.toFloat(), originalHeight * presentScale)
+                val fixedTranslationX =
+                    getFixDragTrans(changeInX, mViewedWidth.toFloat(), originalWidth * presentScale)
+                val fixedTranslationY = getFixDragTrans(
+                    changeInY,
+                    mViewedHeight.toFloat(),
+                    originalHeight * presentScale
+                )
                 myMatrix?.postTranslate(fixedTranslationX, fixedTranslationY)
                 fittedTranslation()
                 lastPoint[currentPoint.x] = currentPoint.y
@@ -193,6 +214,7 @@ class CustomZoomView: AppCompatImageView, View.OnTouchListener,
         imageMatrix = myMatrix
         return false
     }
+
     override fun onDown(p0: MotionEvent): Boolean {
         return false
     }

@@ -21,8 +21,8 @@ class DashBoardViewModel @Inject constructor(
     private var uiState = MutableLiveData<DashboardState>()
     var uiStateLiveData: LiveData<DashboardState> = uiState
 
-    private var photosList = MutableLiveData<List<PhotoModel>>()
-    var photosLiveData: LiveData<List<PhotoModel>> = photosList
+    private var photosList = MutableLiveData<List<PhotoModel>?>()
+    var photosLiveData: LiveData<List<PhotoModel>?> = photosList
 
     private var pageNumber: Int = 1
     private var searchQuery: String = ""
@@ -31,43 +31,43 @@ class DashBoardViewModel @Inject constructor(
         fetchPhotos(pageNumber)
     }
 
-    fun loadMorePhotos(){
+    fun loadMorePhotos() {
         pageNumber++
         if (searchQuery == "")
             fetchPhotos(pageNumber)
         else
-            searchPhotos(pageNumber,searchQuery)
+            searchPhotos(pageNumber, searchQuery)
     }
 
-    fun retry(){
-        if (searchQuery=="")
+    fun retry() {
+        if (searchQuery == "")
             fetchPhotos(pageNumber)
         else
-            searchPhotos(pageNumber,searchQuery)
+            searchPhotos(pageNumber, searchQuery)
     }
 
-    fun searchPhotos(query:String){
+    fun searchPhotos(query: String) {
         searchQuery = query
         pageNumber = 1
-        searchPhotos(pageNumber,query)
+        searchPhotos(pageNumber, query)
 
     }
 
-    fun fetchPhotos(page:Int){
+    fun fetchPhotos(page: Int) {
 
-        uiState.postValue(if (pageNumber==1) LoadingState else LoadingNextPageState)
+        uiState.postValue(if (pageNumber == 1) LoadingState else LoadingNextPageState)
         viewModelScope.launch {
-            fetchPopularImages(page).collect() { dataState->
-                when(dataState){
+            fetchPopularImages(page).collect() { dataState ->
+                when (dataState) {
 
                     is Resource.Success -> {
 
-                        if (page==1){
+                        if (page == 1) {
                             uiState.postValue(ContentState)
-                            photosList.postValue(dataState.data!!)
-                        }else{
+                            photosList.postValue(dataState.data)
+                        } else {
                             uiState.postValue(ContentNextPageState)
-                            var currentList = arrayListOf<PhotoModel>()
+                            val currentList = arrayListOf<PhotoModel>()
                             photosList.value?.let {
                                 currentList.addAll(it)
                             }
@@ -77,7 +77,7 @@ class DashBoardViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        if (page==1)
+                        if (page == 1)
                             uiState.postValue(ErrorState(dataState.message))
                         else
                             uiState.postValue(ErrorNextPageState(dataState.message))
@@ -90,23 +90,23 @@ class DashBoardViewModel @Inject constructor(
 
     }
 
-    private fun searchPhotos(page: Int, searchQuery:String){
+    private fun searchPhotos(page: Int, searchQuery: String) {
 
-        uiState.postValue(if (page==1) LoadingState else LoadingNextPageState)
+        uiState.postValue(if (page == 1) LoadingState else LoadingNextPageState)
         viewModelScope.launch {
-            searchPhotosCases(searchQuery,page).collect {dataState ->
+            searchPhotosCases(searchQuery, page).collect { dataState ->
 
-                when(dataState){
+                when (dataState) {
 
                     is Resource.Success -> {
-                        if (page==1){
+                        if (page == 1) {
                             uiState.postValue(ContentState)
-                            photosList.postValue(dataState.data!!)
+                            photosList.postValue(dataState.data)
 
-                        }else{
+                        } else {
 
                             uiState.postValue(ContentNextPageState)
-                            var currentList = arrayListOf<PhotoModel>()
+                            val currentList = arrayListOf<PhotoModel>()
                             photosList.value?.let {
                                 currentList.addAll(it)
                             }
@@ -116,7 +116,7 @@ class DashBoardViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        if (page==1)
+                        if (page == 1)
                             uiState.postValue(ErrorState(dataState.message))
                         else
                             uiState.postValue(ErrorNextPageState(dataState.message))

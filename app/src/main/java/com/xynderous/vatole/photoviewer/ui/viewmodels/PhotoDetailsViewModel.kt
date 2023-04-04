@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class PhotoDetailsViewModel @Inject constructor(): ViewModel() {
+class PhotoDetailsViewModel @Inject constructor() : ViewModel() {
 
     private var photoModel = MutableLiveData<PhotoModel>()
     var photoModelLiveData: LiveData<PhotoModel> = photoModel

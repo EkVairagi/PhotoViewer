@@ -43,7 +43,7 @@ sealed class ApiResponse<out T> {
          *
          * [ApiFailureResponse] factory function.
          */
-        fun <T> error(response: Response<T>) = ApiFailureResponse.Error<T>(response)
+        fun <T> error(response: Response<T>) = ApiFailureResponse.Error(response)
 
         /**
          * ApiResponse Factory.

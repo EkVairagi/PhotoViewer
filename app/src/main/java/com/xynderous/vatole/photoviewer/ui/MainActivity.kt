@@ -12,24 +12,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding:ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         supportActionBar?.hide()
-
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
     }
 
     private fun initViews() {
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostMain) as NavHostFragment
-        navController =navHostFragment.navController
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navHostMain) as NavHostFragment
+        navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
 
     }

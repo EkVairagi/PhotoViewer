@@ -20,7 +20,7 @@ import com.xynderous.vatole.photoviewer.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
+class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> DashboardFragmentBinding
         get() = DashboardFragmentBinding::inflate
@@ -29,7 +29,6 @@ class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
     private val viewModel: DashBoardViewModel by viewModels()
 
     private lateinit var photosAdapter: PhotosAdapter
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +40,7 @@ class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
 
     private fun initObserver() {
 
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { state->
+        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { state ->
 
             when (state) {
                 is LoadingState -> {
@@ -75,26 +74,29 @@ class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
 
         }
 
-        viewModel.photosLiveData.observe(viewLifecycleOwner) { photos->
-            photosAdapter.updateItems(photos)
-
+        viewModel.photosLiveData.observe(viewLifecycleOwner) { photos ->
+            photosAdapter.differ.submitList(photos)
         }
 
     }
 
     private fun initViews() {
-        val gridLayoutManager = GridLayoutManager(context,2)
+        val gridLayoutManager = GridLayoutManager(context, 2)
         binding?.recyclerPopularPhotos?.layoutManager = gridLayoutManager
 
-        photosAdapter = PhotosAdapter { photo,_ ->
+        photosAdapter = PhotosAdapter { photo, _ ->
             var bundle = bundleOf("photo" to photo)
-            findNavController().navigate(R.id.action_dashboardFragment_to_photosDetailsFragment,bundle)
+            findNavController().navigate(
+                R.id.action_dashboardFragment_to_photosDetailsFragment,
+                bundle
+            )
         }
 
-        photosAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        photosAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding?.recyclerPopularPhotos?.adapter = photosAdapter
 
-        binding?.nestedScrollView?.setOnScrollChangeListener { v:NestedScrollView, _, scrollY, _, _ ->
+        binding?.nestedScrollView?.setOnScrollChangeListener { v: NestedScrollView, _, scrollY, _, _ ->
             if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
                 viewModel.loadMorePhotos()
             }
@@ -107,7 +109,7 @@ class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
         }
 
         binding?.txtSearchPhotos?.setOnEditorActionListener { textView, i, keyEvent ->
-            if (i == EditorInfo.IME_ACTION_SEARCH){
+            if (i == EditorInfo.IME_ACTION_SEARCH) {
                 binding?.txtSearchPhotos?.dismissKeyboard()
                 performSearch(binding?.txtSearchPhotos?.text.toString())
                 true
@@ -119,7 +121,7 @@ class DashBoardFragment: BaseFragment<DashboardFragmentBinding>() {
 
     private fun performSearch(query: String) {
         binding?.txtSearchPhotos?.setText(query)
-        binding?.tvPopular?.text = getString(R.string.search_results_for_str,query)
+        binding?.tvPopular?.text = getString(R.string.search_results_for_str, query)
         viewModel.searchPhotos(query)
     }
 

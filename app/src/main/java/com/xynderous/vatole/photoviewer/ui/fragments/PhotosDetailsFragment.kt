@@ -24,7 +24,6 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
             findNavController().popBackStack()
             return
         }
-        initViews()
         initObserver()
         viewModel.initPhotoModel(photo)
     }
@@ -33,8 +32,5 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
         viewModel.photoModelLiveData.observe(viewLifecycleOwner) { photo ->
             binding?.photoView?.load(photo.urls?.full)
         }
-    }
-
-    private fun initViews() {
     }
 }

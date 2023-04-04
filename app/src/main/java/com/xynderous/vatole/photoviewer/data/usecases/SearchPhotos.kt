@@ -7,7 +7,7 @@ import javax.inject.Inject
 class SearchPhotos @Inject constructor(private val repository: PhotosRepository) {
 
     suspend operator fun invoke(
-        query:String,
+        query: String,
         pageNumber: Int = 1,
         pageSize: Int = AppConstants.QUERY_PAGE_SIZE
     ) = repository.searchPhotos(query = query, pageNumber = pageNumber, pageSize = pageSize)

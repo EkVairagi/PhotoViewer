@@ -20,11 +20,16 @@ fun Fragment.showToast(message: String) {
 }
 
 fun EditText.dismissKeyboard() {
-    val imm: InputMethodManager? = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    val imm: InputMethodManager? =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     imm?.hideSoftInputFromWindow(windowToken, 0)
 }
 
-fun View.showSnack(message: String, action: String = "", actionListener: () -> Unit = {}): Snackbar {
+fun View.showSnack(
+    message: String,
+    action: String = "",
+    actionListener: () -> Unit = {}
+): Snackbar {
     var snackbar = Snackbar.make(this, message, Snackbar.LENGTH_SHORT)
     if (action != "") {
         snackbar.duration = Snackbar.LENGTH_INDEFINITE

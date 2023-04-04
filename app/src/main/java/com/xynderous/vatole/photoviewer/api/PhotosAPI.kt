@@ -20,4 +20,8 @@ interface PhotosAPI {
         @Query("page") page: Int = 1,
         @Query("per_page") numOfPhotos: Int = 10,
     ): ApiResponse<SearchPhotosResponse>
+
+
+    ///https://api.unsplash.com/photos/1NCcWi24FRs?page=1&client_id=K9TTj14DjBSxfc9fU-y9rDPkOxc2IcVyTzs_yes3zIA
+
 }

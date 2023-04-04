@@ -1,7 +1,6 @@
 package com.xynderous.vatole.photoviewer.di
 
 import android.app.Application
-import android.app.Service
 import com.xynderous.vatole.photoviewer.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.repositories.PhotosRepositoryImpl

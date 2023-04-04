@@ -29,12 +29,12 @@ class PhotosRepositoryImpl @Inject constructor(
                     }
                 }
             }.onErrorSuspend {
-                emit(Resource.error<List<PhotoModel>>(message()))
+                emit(Resource.error(message()))
             }.onExceptionSuspend {
                 if (this.exception is IOException) {
-                    emit(Resource.error<List<PhotoModel>>(appEnum.noNetworkErrorMessage()))
+                    emit(Resource.error(appEnum.noNetworkErrorMessage()))
                 } else {
-                    emit(Resource.error<List<PhotoModel>>(appEnum.somethingWentWrong()))
+                    emit(Resource.error(appEnum.somethingWentWrong()))
                 }
             }
         }
@@ -54,13 +54,13 @@ class PhotosRepositoryImpl @Inject constructor(
                     }
                 }
             }.onErrorSuspend {
-                emit(Resource.error<List<PhotoModel>>(message()))
+                emit(Resource.error(message()))
 
             }.onExceptionSuspend {
                 if (this.exception is IOException) {
-                    emit(Resource.error<List<PhotoModel>>(appEnum.noNetworkErrorMessage()))
+                    emit(Resource.error(appEnum.noNetworkErrorMessage()))
                 } else {
-                    emit(Resource.error<List<PhotoModel>>(appEnum.somethingWentWrong()))
+                    emit(Resource.error(appEnum.somethingWentWrong()))
                 }
             }
         }
