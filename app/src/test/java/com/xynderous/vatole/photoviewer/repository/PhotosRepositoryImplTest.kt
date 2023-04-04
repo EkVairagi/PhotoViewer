@@ -2,12 +2,12 @@ package com.xynderous.vatole.photoviewer.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.xynderous.vatole.photoviewer.MainCoroutine
-import com.xynderous.vatole.photoviewer.api.ApiResponse
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import com.xynderous.vatole.photoviewer.api.ApiUtil.successCall
-import com.xynderous.vatole.photoviewer.api.PhotosAPI
+import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.api.message
 import com.xynderous.vatole.photoviewer.model.PhotoModel
-import com.xynderous.vatole.photoviewer.repositories.PhotosRepositoryImpl
+import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations

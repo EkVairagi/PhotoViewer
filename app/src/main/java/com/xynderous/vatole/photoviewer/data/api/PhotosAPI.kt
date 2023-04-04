@@ -1,5 +1,6 @@
-package com.xynderous.vatole.photoviewer.api
+package com.xynderous.vatole.photoviewer.data.api
 
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import com.xynderous.vatole.photoviewer.model.PhotoModel
 import com.xynderous.vatole.photoviewer.model.SearchPhotosResponse
 import retrofit2.http.GET

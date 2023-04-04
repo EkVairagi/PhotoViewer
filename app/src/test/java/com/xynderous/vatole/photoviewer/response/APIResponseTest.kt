@@ -1,6 +1,6 @@
 package com.xynderous.vatole.photoviewer.response
 
-import com.xynderous.vatole.photoviewer.api.ApiResponse
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.After

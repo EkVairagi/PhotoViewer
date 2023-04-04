@@ -1,7 +1,7 @@
 package com.xynderous.vatole.photoviewer.api
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.xynderous.vatole.photoviewer.api.ApiResponseCallAdapterFactory
+import com.xynderous.vatole.photoviewer.data.api.ApiResponseCallAdapterFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest

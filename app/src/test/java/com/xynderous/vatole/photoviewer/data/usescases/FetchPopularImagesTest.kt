@@ -1,7 +1,7 @@
 package com.xynderous.vatole.photoviewer.data.usescases
 
 import com.xynderous.vatole.photoviewer.data.usecases.FetchPopularImages
-import com.xynderous.vatole.photoviewer.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

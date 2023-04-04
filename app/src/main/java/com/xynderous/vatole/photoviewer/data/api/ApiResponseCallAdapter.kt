@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.api
+package com.xynderous.vatole.photoviewer.data.api
 
 import okhttp3.Request
 import okio.Timeout

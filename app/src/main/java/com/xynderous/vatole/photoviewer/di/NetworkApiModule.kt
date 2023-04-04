@@ -1,7 +1,7 @@
 package com.xynderous.vatole.photoviewer.di
 
-import com.xynderous.vatole.photoviewer.api.ApiResponseCallAdapterFactory
-import com.xynderous.vatole.photoviewer.api.PhotosAPI
+import com.xynderous.vatole.photoviewer.data.api.ApiResponseCallAdapterFactory
+import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.API_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.BASE_URL
 import dagger.Module

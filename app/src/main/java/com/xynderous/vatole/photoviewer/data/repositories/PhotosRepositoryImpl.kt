@@ -1,7 +1,8 @@
-package com.xynderous.vatole.photoviewer.repositories
+package com.xynderous.vatole.photoviewer.data.repositories
 
 import androidx.annotation.WorkerThread
 import com.xynderous.vatole.photoviewer.api.*
+import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.model.PhotoModel
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import com.xynderous.vatole.photoviewer.utils.Resource

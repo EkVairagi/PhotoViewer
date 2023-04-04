@@ -1,5 +1,6 @@
 package com.xynderous.vatole.photoviewer.api
 
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import retrofit2.Response
 
 object ApiUtil {

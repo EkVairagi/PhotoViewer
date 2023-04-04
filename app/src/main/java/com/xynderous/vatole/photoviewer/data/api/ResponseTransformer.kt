@@ -1,5 +1,7 @@
 package com.xynderous.vatole.photoviewer.api
 
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
+
 /**
  * A suspend function for handling success response.
  */

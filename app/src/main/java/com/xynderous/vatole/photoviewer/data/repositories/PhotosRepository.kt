@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.repositories
+package com.xynderous.vatole.photoviewer.data.repositories
 
 import com.xynderous.vatole.photoviewer.model.PhotoModel
 import com.xynderous.vatole.photoviewer.utils.Resource

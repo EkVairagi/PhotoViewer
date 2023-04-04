@@ -2,8 +2,8 @@ package com.xynderous.vatole.photoviewer.response
 
 import com.xynderous.vatole.photoviewer.MainCoroutine
 import com.xynderous.vatole.photoviewer.api.ApiAbstract
-import com.xynderous.vatole.photoviewer.api.ApiResponse
-import com.xynderous.vatole.photoviewer.api.PhotosAPI
+import com.xynderous.vatole.photoviewer.data.api.ApiResponse
+import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
