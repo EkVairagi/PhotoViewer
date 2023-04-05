@@ -3,7 +3,8 @@ package com.xynderous.vatole.photoviewer.data.repositories
 import androidx.annotation.WorkerThread
 import com.xynderous.vatole.photoviewer.api.*
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
-import com.xynderous.vatole.photoviewer.model.PhotoModel
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
+import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import com.xynderous.vatole.photoviewer.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,6 @@ class PhotosRepositoryImpl @Inject constructor(
     private val appEnum: AppEnum,
     private val photosApi: PhotosAPI
 ) : PhotosRepository {
-
     @WorkerThread
     override suspend fun loadPhotos(
         pageNumber: Int,
@@ -52,6 +52,30 @@ class PhotosRepositoryImpl @Inject constructor(
                 this.onSuccessSuspend {
                     data?.let {
                         emit(Resource.success(it.photosList))
+                    }
+                }
+            }.onErrorSuspend {
+                emit(Resource.error(message()))
+
+            }.onExceptionSuspend {
+                if (this.exception is IOException) {
+                    emit(Resource.error(appEnum.noNetworkErrorMessage()))
+                } else {
+                    emit(Resource.error(appEnum.somethingWentWrong()))
+                }
+            }
+        }
+    }
+
+
+    override suspend fun imageDescription(
+        id: String, pageNumber: Int
+    ): Flow<Resource<PhotoModel>> {
+        return flow {
+            photosApi.imageDescription(id, pageNumber).apply {
+                this.onSuccessSuspend {
+                    data?.let {
+                        emit(Resource.success(it))
                     }
                 }
             }.onErrorSuspend {

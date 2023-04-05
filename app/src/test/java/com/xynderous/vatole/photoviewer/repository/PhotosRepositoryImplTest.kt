@@ -6,7 +6,7 @@ import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import com.xynderous.vatole.photoviewer.api.ApiUtil.successCall
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.api.message
-import com.xynderous.vatole.photoviewer.model.PhotoModel
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import com.xynderous.vatole.photoviewer.utils.Resource

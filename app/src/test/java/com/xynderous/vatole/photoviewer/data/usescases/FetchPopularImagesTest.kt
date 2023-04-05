@@ -1,7 +1,7 @@
 package com.xynderous.vatole.photoviewer.data.usescases
 
-import com.xynderous.vatole.photoviewer.data.usecases.FetchPopularImages
-import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
+import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -15,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mock
 
 @RunWith(JUnit4::class)
 class FetchPopularImagesTest {

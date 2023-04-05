@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.model
+package com.xynderous.vatole.photoviewer.domain.model
 
 
 import android.os.Parcelable
@@ -10,6 +10,7 @@ data class PhotoModel(
     val created_at: String? = "",
     val color: String? = "",
     val description: String? = "",
+    val alt_description: String? = "",
     val urls: PhotoUrlsModel? = null,
     val user: UserModel? = null
 ) : Parcelable

@@ -1,9 +1,9 @@
 package com.xynderous.vatole.photoviewer.data.api
 
-import com.xynderous.vatole.photoviewer.data.api.ApiResponse
-import com.xynderous.vatole.photoviewer.model.PhotoModel
-import com.xynderous.vatole.photoviewer.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PhotosAPI {
@@ -23,6 +23,10 @@ interface PhotosAPI {
     ): ApiResponse<SearchPhotosResponse>
 
 
-    ///https://api.unsplash.com/photos/1NCcWi24FRs?page=1&client_id=K9TTj14DjBSxfc9fU-y9rDPkOxc2IcVyTzs_yes3zIA
+    @GET("photos/{id}")
+    suspend fun imageDescription(
+        @Path("id") fleetId: String,
+        @Query("page") page: Int = 1
+    ): ApiResponse<PhotoModel>
 
 }

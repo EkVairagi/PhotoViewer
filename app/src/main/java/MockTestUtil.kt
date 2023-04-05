@@ -1,7 +1,9 @@
-import com.xynderous.vatole.photoviewer.model.PhotoModel
-import com.xynderous.vatole.photoviewer.model.PhotoUrlsModel
-import com.xynderous.vatole.photoviewer.model.SearchPhotosResponse
-import com.xynderous.vatole.photoviewer.model.UserModel
+
+import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
+import com.xynderous.vatole.photoviewer.domain.model.PhotoUrlsModel
+import com.xynderous.vatole.photoviewer.domain.model.UserModel
+
 
 class MockTestUtil {
     companion object {

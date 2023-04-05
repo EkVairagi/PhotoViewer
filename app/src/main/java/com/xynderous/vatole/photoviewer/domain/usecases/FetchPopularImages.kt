@@ -1,6 +1,6 @@
-package com.xynderous.vatole.photoviewer.data.usecases
+package com.xynderous.vatole.photoviewer.domain.usecases
 
-import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import javax.inject.Inject
 

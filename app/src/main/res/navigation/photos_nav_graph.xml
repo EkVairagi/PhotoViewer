@@ -8,14 +8,18 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.xynderous.vatole.photoviewer.ui.fragments.DashBoardFragment"
-        android:label="DashboardFragment" >
+        android:name="com.xynderous.vatole.photoviewer.presenter.fragments.DashBoardFragment"
+        android:label="Home" >
         <action
             android:id="@+id/action_dashboardFragment_to_photosDetailsFragment"
             app:destination="@id/photosDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/photosDetailsFragment"
-        android:name="com.xynderous.vatole.photoviewer.ui.fragments.PhotosDetailsFragment"
-        android:label="PhotosDetailsFragment" />
+        android:name="com.xynderous.vatole.photoviewer.presenter.fragments.PhotosDetailsFragment"
+        android:label="Details" >
+        <action
+            android:id="@+id/action_photosDetailsFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+    </fragment>
 </navigation>

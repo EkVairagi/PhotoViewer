@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.ui.fragments
+package com.xynderous.vatole.photoviewer.presenter.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +16,10 @@ import com.xynderous.vatole.photoviewer.R
 import com.xynderous.vatole.photoviewer.adapters.PhotosAdapter
 import com.xynderous.vatole.photoviewer.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
-import com.xynderous.vatole.photoviewer.ui.viewmodels.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.utils.*
+import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
+import com.xynderous.vatole.photoviewer.utils.dismissKeyboard
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
@@ -25,67 +27,31 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> DashboardFragmentBinding
         get() = DashboardFragmentBinding::inflate
 
-
     private val viewModel: DashBoardViewModel by viewModels()
-
     private lateinit var photosAdapter: PhotosAdapter
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViews()
         initObserver()
     }
 
     private fun initObserver() {
-
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { state ->
-
-            when (state) {
-                is LoadingState -> {
-                    binding?.recyclerPopularPhotos.makeVisibleIf(false)
-                    binding?.progressPhotos.makeVisibleIf(true)
+        lifecycleScope.launch {
+            launch {
+                viewModel.photosLiveData.collect { data ->
+                    photosAdapter.differ.submitList(data)
                 }
-
-                is LoadingNextPageState -> {
-                    binding?.progressPhotos.makeVisibleIf(false)
-                }
-
-                is ContentState -> {
-                    binding?.recyclerPopularPhotos.makeVisibleIf(true)
-                    binding?.progressPhotos.makeVisibleIf(false)
-                }
-
-                is ErrorState -> {
-                    binding?.progressPhotos.makeVisibleIf(false)
-                    binding?.nestedScrollView?.showSnack(state.message, getString(R.string.retry)) {
-                        viewModel.retry()
-                    }
-                }
-
-                is ErrorNextPageState -> {
-                    binding?.nestedScrollView?.showSnack(state.message, getString(R.string.retry)) {
-                        viewModel.retry()
-                    }
-                }
-                else -> {}
             }
-
         }
-
-        viewModel.photosLiveData.observe(viewLifecycleOwner) { photos ->
-            photosAdapter.differ.submitList(photos)
-        }
-
     }
+
 
     private fun initViews() {
         val gridLayoutManager = GridLayoutManager(context, 2)
         binding?.recyclerPopularPhotos?.layoutManager = gridLayoutManager
-
         photosAdapter = PhotosAdapter { photo, _ ->
-            var bundle = bundleOf("photo" to photo)
+            val bundle = bundleOf("photo" to photo)
             findNavController().navigate(
                 R.id.action_dashboardFragment_to_photosDetailsFragment,
                 bundle
@@ -108,15 +74,13 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
             viewModel.fetchPhotos(1)
         }
 
-        binding?.txtSearchPhotos?.setOnEditorActionListener { textView, i, keyEvent ->
+        binding?.txtSearchPhotos?.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_SEARCH) {
                 binding?.txtSearchPhotos?.dismissKeyboard()
                 performSearch(binding?.txtSearchPhotos?.text.toString())
-                true
             }
             false
         }
-
     }
 
     private fun performSearch(query: String) {
@@ -124,6 +88,5 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
         binding?.tvPopular?.text = getString(R.string.search_results_for_str, query)
         viewModel.searchPhotos(query)
     }
-
 
 }

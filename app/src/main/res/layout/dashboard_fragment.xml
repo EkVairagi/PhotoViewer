@@ -78,16 +78,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPopular"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"/>
-
-        <ProgressBar android:id="@+id/progressPhotos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@+id/cardSearchPhotos"
-            app:layout_constraintEnd_toEndOf="@+id/cardSearchPhotos"
-            app:layout_constraintTop_toBottomOf="@+id/tvPopular"
-            android:layout_marginTop="40dp"
-            />
-
+        
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

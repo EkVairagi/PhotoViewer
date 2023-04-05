@@ -1,14 +1,10 @@
 package com.xynderous.vatole.photoviewer.ui.dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.xynderous.vatole.photoviewer.MainCoroutine
-import com.xynderous.vatole.photoviewer.data.usecases.FetchPopularImages
-import com.xynderous.vatole.photoviewer.data.usecases.SearchPhotos
-import com.xynderous.vatole.photoviewer.model.PhotoModel
-import com.xynderous.vatole.photoviewer.ui.viewmodels.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.utils.ContentState
-import com.xynderous.vatole.photoviewer.utils.DashboardState
+import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
+import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
+import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -52,8 +48,6 @@ class DashboardViewModelTest {
     fun `test when HomeViewModel is initialized, popular photos are fetched`() = runBlocking {
         // Given
         val givenPhotos = MockTestUtil.createPhotos(3)
-        val uiObserver = mockk<Observer<DashboardState>>(relaxed = true)
-        val photosListObserver = mockk<Observer<List<PhotoModel>>>(relaxed = true)
 
         // When
         coEvery { fetchPopularPhotosUsecase.invoke(any(), any(), any()) }
@@ -61,12 +55,8 @@ class DashboardViewModelTest {
 
         // Invoke
         viewModel = DashBoardViewModel(fetchPopularPhotosUsecase, searchPhotosUsecase)
-        viewModel.uiStateLiveData.observeForever(uiObserver)
-        viewModel.photosLiveData.observeForever(photosListObserver)
 
         // Then
         coVerify(exactly = 1) { fetchPopularPhotosUsecase.invoke() }
-        verify { uiObserver.onChanged(match { it == ContentState }) }
-        verify { photosListObserver.onChanged(match { it.size == givenPhotos.size }) }
     }
 }

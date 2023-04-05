@@ -2,7 +2,7 @@ package com.xynderous.vatole.photoviewer.di
 
 import android.app.Application
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
-import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import dagger.Module
