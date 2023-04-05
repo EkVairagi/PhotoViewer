@@ -44,7 +44,10 @@ class APIServiceTest : ApiAbstract<PhotosAPI>() {
         // Then
         MatcherAssert.assertThat(responseBody[0].id, CoreMatchers.`is`("LBI7cgq3pbM"))
         MatcherAssert.assertThat(responseBody[0].color, CoreMatchers.`is`("#60544D"))
-        MatcherAssert.assertThat(responseBody[0].urls?.thumb, CoreMatchers.`is`("https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=200&fit=max"))
+        MatcherAssert.assertThat(
+            responseBody[0].urls?.thumb,
+            CoreMatchers.`is`("https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=200&fit=max")
+        )
         MatcherAssert.assertThat(responseBody[0].user?.id, CoreMatchers.`is`("pXhwzz1JtQU"))
         MatcherAssert.assertThat(responseBody[0].user?.username, CoreMatchers.`is`("poorkane"))
     }
@@ -67,8 +70,39 @@ class APIServiceTest : ApiAbstract<PhotosAPI>() {
 
         MatcherAssert.assertThat(responseBody.photosList[0].id, CoreMatchers.`is`("eOLpJytrbsQ"))
         MatcherAssert.assertThat(responseBody.photosList[0].color, CoreMatchers.`is`("#A7A2A1"))
-        MatcherAssert.assertThat(responseBody.photosList[0].urls?.thumb, CoreMatchers.`is`("https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=8aae34cf35df31a592f0bef16e6342ef"))
-        MatcherAssert.assertThat(responseBody.photosList[0].user?.id, CoreMatchers.`is`("Ul0QVz12Goo"))
-        MatcherAssert.assertThat(responseBody.photosList[0].user?.username, CoreMatchers.`is`("ugmonk"))
+        MatcherAssert.assertThat(
+            responseBody.photosList[0].urls?.thumb,
+            CoreMatchers.`is`("https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=8aae34cf35df31a592f0bef16e6342ef")
+        )
+        MatcherAssert.assertThat(
+            responseBody.photosList[0].user?.id,
+            CoreMatchers.`is`("Ul0QVz12Goo")
+        )
+        MatcherAssert.assertThat(
+            responseBody.photosList[0].user?.username,
+            CoreMatchers.`is`("ugmonk")
+        )
     }
+
+
+    @Throws(IOException::class)
+    @Test
+    fun `test imageDescription() returns Photos`() = runBlocking {
+        // Given
+        enqueueResponse("/photos_details_response.json")
+
+        // Invoke
+        val response = apiService.imageDescription("", 1)
+        val responseBody = requireNotNull((response as ApiResponse.ApiSuccessResponse).data)
+        mockWebServer.takeRequest()
+
+        // Then
+        MatcherAssert.assertThat(responseBody.id, CoreMatchers.`is`("1NCcWi24FRs"))
+        MatcherAssert.assertThat(
+            responseBody.user?.name,
+            CoreMatchers.`is`("Boxed Water Is Better")
+        )
+        MatcherAssert.assertThat(responseBody.user?.location, CoreMatchers.`is`("Holland, MI"))
+    }
+
 }

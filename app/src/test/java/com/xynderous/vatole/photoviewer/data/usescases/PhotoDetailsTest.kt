@@ -1,7 +1,9 @@
 package com.xynderous.vatole.photoviewer.data.usescases
 
-import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
+
+import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -17,7 +19,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class FetchPopularImagesTest {
+class PhotoDetailsTest {
 
     @MockK
     private lateinit var repository: PhotosRepository
@@ -28,17 +30,17 @@ class FetchPopularImagesTest {
     }
 
     @Test
-    fun `test invoking FetchPopularPhotosUsecase gives list of photos`() = runBlocking {
+    fun `test invoking SearchPhotosUsecase gives list of photos`() = runBlocking {
         // Given
-        val usecase = FetchPopularImages(repository)
-        val givenPhotos = MockTestUtil.createPhotos(3)
+        val usecase = ImageDescription(repository)
+        val givenPhotos = MockTestUtil.imageDescription()
 
         // When
-        coEvery { repository.loadPhotos(any(), any(), any()) }
+        coEvery { repository.imageDescription(any(), any()) }
             .returns(flowOf(Resource.success(givenPhotos)))
 
         // Invoke
-        val photosListFlow = usecase(1, 1, "")
+        val photosListFlow = usecase(1, "")
 
         // Then
         MatcherAssert.assertThat(photosListFlow, CoreMatchers.notNullValue())
@@ -52,6 +54,6 @@ class FetchPopularImagesTest {
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosList.size, CoreMatchers.`is`(givenPhotos.size))
+        MatcherAssert.assertThat(photosList, CoreMatchers.`is`(givenPhotos))
     }
 }

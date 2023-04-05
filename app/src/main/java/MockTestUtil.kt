@@ -45,5 +45,17 @@ class MockTestUtil {
                 photosList = createPhotos(3)
             )
         }
+
+        fun imageDescription(): PhotoModel {
+            return PhotoModel(
+                id = "",
+                created_at = "2016-05-03T11:00:28-04:00",
+                color = "#60544D",
+                description = "A man drinking a coffee.",
+                urls = createPhotoUrls(),
+            )
+        }
+
+
     }
 }

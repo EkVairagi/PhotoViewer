@@ -45,7 +45,10 @@ class SearchPhotoTest {
 
         val photosListDataState = photosListFlow.first()
         MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.instanceOf(Resource.Success::class.java))
+        MatcherAssert.assertThat(
+            photosListDataState,
+            CoreMatchers.instanceOf(Resource.Success::class.java)
+        )
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())

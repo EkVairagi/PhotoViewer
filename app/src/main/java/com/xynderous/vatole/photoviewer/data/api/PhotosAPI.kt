@@ -25,7 +25,7 @@ interface PhotosAPI {
 
     @GET("photos/{id}")
     suspend fun imageDescription(
-        @Path("id") fleetId: String,
+        @Path("id") id: String,
         @Query("page") page: Int = 1
     ): ApiResponse<PhotoModel>
 

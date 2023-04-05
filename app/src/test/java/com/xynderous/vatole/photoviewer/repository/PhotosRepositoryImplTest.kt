@@ -6,8 +6,8 @@ import com.xynderous.vatole.photoviewer.data.api.ApiResponse
 import com.xynderous.vatole.photoviewer.api.ApiUtil.successCall
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.api.message
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import com.xynderous.vatole.photoviewer.utils.AppEnum
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
@@ -76,7 +76,10 @@ class PhotosRepositoryImplTest {
 
         val photosListDataState = apiResponseFlow.first()
         MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.instanceOf(Resource.Success::class.java))
+        MatcherAssert.assertThat(
+            photosListDataState,
+            CoreMatchers.instanceOf(Resource.Success::class.java)
+        )
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
@@ -105,7 +108,10 @@ class PhotosRepositoryImplTest {
 
         val photosListDataState = apiResponseFlow.first()
         MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.instanceOf(Resource.Success::class.java))
+        MatcherAssert.assertThat(
+            photosListDataState,
+            CoreMatchers.instanceOf(Resource.Success::class.java)
+        )
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
@@ -138,7 +144,10 @@ class PhotosRepositoryImplTest {
 
         val apiResponseDataState = apiResponseFlow.first()
         MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.instanceOf(Resource.Error::class.java))
+        MatcherAssert.assertThat(
+            apiResponseDataState,
+            CoreMatchers.instanceOf(Resource.Error::class.java)
+        )
 
         val errorMessage = (apiResponseDataState as Resource.Error).message
         MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
@@ -171,7 +180,10 @@ class PhotosRepositoryImplTest {
 
         val apiResponseDataState = apiResponseFlow.first()
         MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.instanceOf(Resource.Error::class.java))
+        MatcherAssert.assertThat(
+            apiResponseDataState,
+            CoreMatchers.instanceOf(Resource.Error::class.java)
+        )
 
         val errorMessage = (apiResponseDataState as Resource.Error).message
         MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
@@ -200,7 +212,10 @@ class PhotosRepositoryImplTest {
 
         val photosListDataState = apiResponseFlow.first()
         MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.instanceOf(Resource.Success::class.java))
+        MatcherAssert.assertThat(
+            photosListDataState,
+            CoreMatchers.instanceOf(Resource.Success::class.java)
+        )
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
