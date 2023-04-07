@@ -19,7 +19,7 @@ import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
 import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
 import com.xynderous.vatole.photoviewer.utils.dismissKeyboard
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @AndroidEntryPoint
 class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
@@ -29,6 +29,13 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
     private val viewModel: DashBoardViewModel by viewModels()
     private lateinit var photosAdapter: PhotosAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.fetchPhotosAPI()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -23,18 +23,21 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
         get() = FragmentPhotoDetailsBinding::inflate
     private val viewModel: PhotoDetailsViewModel by viewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         val photo = arguments?.getParcelable<PhotoModel>("photo")
-
         if (photo == null) {
             findNavController().popBackStack()
             return
         }
-        initObserver()
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.loadPhotosById(photo.id ?: "")
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initObserver()
     }
 
     private fun initObserver() {

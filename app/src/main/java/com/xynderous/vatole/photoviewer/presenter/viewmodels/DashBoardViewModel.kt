@@ -24,12 +24,9 @@ class DashBoardViewModel @Inject constructor(
     private var pageNumber: Int = 1
     private var searchQuery: String = ""
 
-    init {
-        viewModelScope.launch {
-            fetchPhotos(pageNumber)
-        }
+    fun fetchPhotosAPI() {
+        fetchPhotos(pageNumber)
     }
-
 
     fun loadMorePhotos() {
         pageNumber++
