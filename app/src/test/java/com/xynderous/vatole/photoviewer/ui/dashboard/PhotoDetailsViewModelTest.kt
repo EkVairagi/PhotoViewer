@@ -3,9 +3,8 @@ package com.xynderous.vatole.photoviewer.ui.dashboard
 import MockTestUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.xynderous.vatole.photoviewer.MainCoroutine
-import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
-import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
+import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
+import com.xynderous.vatole.photoviewer.presenter.viewmodels.PhotoDetailsViewModel
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -22,9 +21,10 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DashboardViewModelTest {
+class PhotoDetailsViewModelTest {
 
-    private lateinit var viewModel: DashBoardViewModel
+    // Subject under test
+    private lateinit var viewModel: PhotoDetailsViewModel
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -33,10 +33,7 @@ class DashboardViewModelTest {
     var coroutinesRule = MainCoroutine()
 
     @MockK
-    lateinit var searchPhotosUsecase: SearchPhotos
-
-    @MockK
-    lateinit var fetchPopularPhotosUsecase: FetchPopularImages
+    lateinit var imageDescriptionUseCases: ImageDescription
 
     @Before
     fun setUp() {
@@ -48,22 +45,20 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `test when DashBoardViewModel is initialized, popular photos are fetched`() = runBlocking {
-
+    fun `test when PhotoDetailsViewModel is initialized, image description are fetched`() = runBlocking {
         // Given
-        val givenPhotos = MockTestUtil.createPhotos(3)
+        val givenPhotos = MockTestUtil.imageDescription()
 
         // When
-        coEvery { fetchPopularPhotosUsecase.invoke(any(), any(), any()) }
+        coEvery { imageDescriptionUseCases.invoke(any(), any()) }
             .returns(flowOf(Resource.success(givenPhotos)))
 
         // Invoke
-        viewModel = DashBoardViewModel(fetchPopularPhotosUsecase, searchPhotosUsecase)
+        viewModel = PhotoDetailsViewModel(imageDescriptionUseCases)
 
-        viewModel.photosLiveData.collect()
+        viewModel.photoModelLiveDataByAPI.collect()
 
         // Then
-        coVerify(exactly = 1) { fetchPopularPhotosUsecase.invoke() }
-
+        coVerify(exactly = 1) { imageDescriptionUseCases.invoke(any()) }
     }
 }
