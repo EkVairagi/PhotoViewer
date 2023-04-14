@@ -48,8 +48,8 @@ class DashBoardViewModel @Inject constructor(
 
     fun fetchPhotos(page: Int) {
         viewModelScope.launch {
-            fetchPopularImages(page).collect { dataState->
-                when(dataState){
+            fetchPopularImages(page).collect { dataState ->
+                when (dataState) {
                     is Resource.Loading -> {
                         val currentState = _photoDetails.value
                         val updatedState = currentState.copy(
@@ -60,12 +60,9 @@ class DashBoardViewModel @Inject constructor(
                     is Resource.Success -> {
                         val currentState = _photoDetails.value
 
-                        val a = currentState.data ?: mutableListOf()
-                        val b = dataState.data ?: mutableListOf()
-                        val c = a+b
-
                         val updatedState = currentState.copy(
-                            data = c
+                            data = (currentState.data ?: mutableListOf()) + (dataState.data
+                                ?: mutableListOf())
                         )
                         _photoDetails.emit(updatedState)
 
@@ -83,20 +80,40 @@ class DashBoardViewModel @Inject constructor(
         }
     }
 
-    private fun searchPhotos(page: Int, searchQuery: String) {
-        searchPhotosCases(searchQuery,page).onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    _photoDetails.emit(PhotoState(isLoading = true))
-                }
-                is Resource.Success -> {
-                    _photoDetails.emit(PhotoState(data = it.data?.photosList))
-                }
-                is Resource.Error -> {
 
-                    _photoDetails.emit(PhotoState(error = it.message ?: ""))
+    fun searchPhotos(page: Int, searchQuery: String) {
+        if (page == 1) {
+            _photoDetails.value = PhotoState(isLoading = true, data = emptyList())
+        }
+        viewModelScope.launch {
+            searchPhotosCases(searchQuery, page).collect { dataState ->
+                when (dataState) {
+                    is Resource.Loading -> {
+                        val currentState = _photoDetails.value
+                        val updatedState = currentState.copy(isLoading = true)
+                        _photoDetails.emit(updatedState)
+                    }
+                    is Resource.Success -> {
+                        val currentState = _photoDetails.value
+                        val existingData = currentState.data.orEmpty()
+                        val newData = dataState.data?.photosList.orEmpty()
+                        val updatedState = currentState.copy(
+                            data = existingData + newData,
+                            isLoading = false,
+                            error = ""
+                        )
+                        _photoDetails.emit(updatedState)
+                    }
+                    is Resource.Error -> {
+                        val currentState = _photoDetails.value
+                        val updatedState = currentState.copy(
+                            isLoading = false,
+                            error = dataState.message ?: ""
+                        )
+                        _photoDetails.emit(updatedState)
+                    }
                 }
             }
-        }.launchIn(viewModelScope)
+        }
     }
 }

@@ -94,7 +94,7 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
         binding?.txtSearchPhotos?.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_SEARCH) {
-                binding?.txtSearchPhotos?.dismissKeyboard()
+               // binding?.txtSearchPhotos?.dismissKeyboard()
                 performSearch(binding?.txtSearchPhotos?.text.toString())
             }
             false
