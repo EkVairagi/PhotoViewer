@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.domain.model
+package com.xynderous.vatole.photoviewer.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

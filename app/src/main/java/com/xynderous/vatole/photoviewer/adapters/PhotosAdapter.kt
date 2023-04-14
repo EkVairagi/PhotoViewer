@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.xynderous.vatole.photoviewer.R
 import com.xynderous.vatole.photoviewer.databinding.PhotosLayoutBinding
-import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 
 class PhotosAdapter(val onPhotoSelected: (photo: PhotoModel, position: Int) -> Unit) :
     RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
@@ -17,7 +17,6 @@ class PhotosAdapter(val onPhotoSelected: (photo: PhotoModel, position: Int) -> U
         override fun areItemsTheSame(oldItem: PhotoModel, newItem: PhotoModel): Boolean {
             return oldItem.id == newItem.id
         }
-
         override fun areContentsTheSame(oldItem: PhotoModel, newItem: PhotoModel): Boolean {
             return oldItem == newItem
         }
@@ -31,6 +30,7 @@ class PhotosAdapter(val onPhotoSelected: (photo: PhotoModel, position: Int) -> U
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.bind(differ.currentList[position], position)
     }
 

@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.Mockito
 
 @RunWith(JUnit4::class)
 class FetchPopularImagesTest {
@@ -29,13 +30,14 @@ class FetchPopularImagesTest {
 
     @Test
     fun `test invoking FetchPopularPhotosUsecase gives list of photos`() = runBlocking {
+
         // Given
         val usecase = FetchPopularImages(repository)
         val givenPhotos = MockTestUtil.createPhotos(3)
 
         // When
         coEvery { repository.loadPhotos(any(), any(), any()) }
-            .returns(flowOf(Resource.success(givenPhotos)))
+            .returns(givenPhotos)
 
         // Invoke
         val photosListFlow = usecase(1, 1, "")
@@ -52,6 +54,6 @@ class FetchPopularImagesTest {
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosList.size, CoreMatchers.`is`(givenPhotos.size))
+        MatcherAssert.assertThat(photosList?.size, CoreMatchers.`is`(givenPhotos.size))
     }
 }

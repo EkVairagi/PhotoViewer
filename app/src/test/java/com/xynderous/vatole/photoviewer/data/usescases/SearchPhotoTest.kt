@@ -31,11 +31,11 @@ class SearchPhotoTest {
     fun `test invoking SearchPhotosUsecase gives list of photos`() = runBlocking {
         // Given
         val usecase = SearchPhotos(repository)
-        val givenPhotos = MockTestUtil.createPhotos(3)
+        val givenPhotos = MockTestUtil.createSearchPhotosResponse()
 
         // When
         coEvery { repository.searchPhotos(any(), any(), any()) }
-            .returns(flowOf(Resource.success(givenPhotos)))
+            .returns(givenPhotos)
 
         // Invoke
         val photosListFlow = usecase("", 1, 1)
@@ -52,6 +52,6 @@ class SearchPhotoTest {
 
         val photosList = (photosListDataState as Resource.Success).data
         MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosList.size, CoreMatchers.`is`(givenPhotos.size))
+        MatcherAssert.assertThat(photosList, CoreMatchers.`is`(givenPhotos))
     }
 }

@@ -1,25 +1,25 @@
 package com.xynderous.vatole.photoviewer.domain.repositories
 
-import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
-import com.xynderous.vatole.photoviewer.utils.Resource
-
-import kotlinx.coroutines.flow.Flow
+import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 
 interface PhotosRepository {
+
     suspend fun loadPhotos(
         pageNumber: Int,
         pageSize: Int,
         orderBy: String
-    ): Flow<Resource<List<PhotoModel>>>
+    ): List<PhotoModel>
 
     suspend fun searchPhotos(
         query: String,
         pageNumber: Int,
         pageSize: Int
-    ): Flow<Resource<List<PhotoModel>>>
+    ): SearchPhotosResponse
 
     suspend fun imageDescription(
         id: String,
         pageNumber: Int
-    ): Flow<Resource<PhotoModel>>
+    ): PhotoModel
+
 }

@@ -4,18 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.xynderous.vatole.photoviewer.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.FragmentPhotoDetailsBinding
-import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import com.xynderous.vatole.photoviewer.presenter.viewmodels.PhotoDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
@@ -25,14 +22,13 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val photo = arguments?.getParcelable<PhotoModel>("photo")
+
+        val photo = arguments?.getString("photo")
         if (photo == null) {
             findNavController().popBackStack()
             return
         }
-        CoroutineScope(Dispatchers.Main).launch {
-            viewModel.loadPhotosById(photo.id ?: "")
-        }
+        viewModel.loadPhotosById(photo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,15 +38,21 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
 
     private fun initObserver() {
 
-        lifecycleScope.launch {
-            launch {
-                viewModel.photoModelLiveDataByAPI.collect { photos ->
-                    binding?.tvUserName?.text = photos?.user?.name
-                    binding?.tvLocation?.text = photos?.user?.location
-                    binding?.tvDesc?.text = photos?.alt_description
-                    binding?.photoView?.load(photos?.urls?.full)
+        lifecycle.coroutineScope.launchWhenCreated {
+            viewModel.photoDetails.collect {
+                if (it.isLoading) {
+                }
+                if (it.error.isNotBlank()) {
+                    Toast.makeText(requireContext(),it.error, Toast.LENGTH_SHORT).show()
+                }
+                it.data?.apply {
+                    binding?.tvUserName?.text = user?.name
+                    binding?.tvLocation?.text = user?.location
+                    binding?.tvDesc?.text = alt_description
+                    binding?.photoView?.load(urls?.full)
                 }
             }
         }
+
     }
 }

@@ -11,9 +11,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,6 +25,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class DashboardViewModelTest {
 
+    // Subject under test
     private lateinit var viewModel: DashBoardViewModel
 
     @get:Rule
@@ -45,25 +47,38 @@ class DashboardViewModelTest {
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `test when DashBoardViewModel is initialized, popular photos are fetched`() = runBlocking {
-
+    fun `test when HomeViewModel is initialized, popular photos are fetched`() = runBlocking {
         // Given
         val givenPhotos = MockTestUtil.createPhotos(3)
 
         // When
         coEvery { fetchPopularPhotosUsecase.invoke(any(), any(), any()) }
-            .returns(flowOf(Resource.success(givenPhotos)))
+            .returns(flowOf(Resource.Success(givenPhotos)))
 
         // Invoke
         viewModel = DashBoardViewModel(fetchPopularPhotosUsecase, searchPhotosUsecase)
 
-        viewModel.photosLiveData.collect()
+        // Then
+        coVerify(exactly = 1) { fetchPopularPhotosUsecase.invoke() }
+    }
+
+    @Test
+    fun `test when HomeViewModel is initialized, popular photos throwing errors`() = runBlocking {
+        // Given
+        val givenMessage = "Test Error Message"
+
+        // When
+        coEvery { fetchPopularPhotosUsecase.invoke(any(), any(), any()) }
+            .returns(flowOf(Resource.Error(givenMessage)))
+
+        // Invoke
+        viewModel = DashBoardViewModel(fetchPopularPhotosUsecase, searchPhotosUsecase)
 
         // Then
         coVerify(exactly = 1) { fetchPopularPhotosUsecase.invoke() }
-
     }
 }

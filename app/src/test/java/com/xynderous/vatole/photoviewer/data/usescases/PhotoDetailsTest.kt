@@ -37,7 +37,7 @@ class PhotoDetailsTest {
 
         // When
         coEvery { repository.imageDescription(any(), any()) }
-            .returns(flowOf(Resource.success(givenPhotos)))
+            .returns(givenPhotos)
 
         // Invoke
         val photosListFlow = usecase(1, "")

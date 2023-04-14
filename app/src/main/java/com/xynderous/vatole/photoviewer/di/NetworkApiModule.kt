@@ -1,6 +1,5 @@
 package com.xynderous.vatole.photoviewer.di
 
-import com.xynderous.vatole.photoviewer.data.api.ApiResponseCallAdapterFactory
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.API_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.BASE_URL
@@ -23,8 +22,6 @@ class NetworkApiModule {
     fun providesOkHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
-
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request()
@@ -42,7 +39,6 @@ class NetworkApiModule {
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .build()
     }
 
