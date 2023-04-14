@@ -55,8 +55,6 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
                         Toast.makeText(requireContext(),it.error, Toast.LENGTH_SHORT).show()
                     }
                     it.data?.let { data->
-                        Log.e("DATA_SIZE",data.size.toString())
-                        Log.e("DATA_SIZE",data.toString())
                         photosAdapter.differ.submitList(data)
                     }
                 }
