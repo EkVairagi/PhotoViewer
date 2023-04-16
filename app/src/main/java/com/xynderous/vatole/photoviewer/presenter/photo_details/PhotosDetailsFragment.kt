@@ -27,6 +27,7 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
             findNavController().popBackStack()
             return
         }
+
         viewModel.loadPhotosById(photo)
     }
 

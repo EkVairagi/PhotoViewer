@@ -17,59 +17,6 @@
     "thumb": "https://images.unsplash.com/photo-1570654621852-9dd25b76b38d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=Mnw0Mjg4Mzd8MHwxfGFsbHx8fHx8fHx8fDE2ODA2OTQyNTk&ixlib=rb-4.0.3&q=80&w=200",
     "small_s3": "https://s3.us-west-2.amazonaws.com/images.unsplash.com/small/photo-1570654621852-9dd25b76b38d"
   },
-  "links": {
-    "self": "https://api.unsplash.com/photos/1NCcWi24FRs",
-    "html": "https://unsplash.com/photos/1NCcWi24FRs",
-    "download": "https://unsplash.com/photos/1NCcWi24FRs/download?ixid=Mnw0Mjg4Mzd8MHwxfGFsbHx8fHx8fHx8fDE2ODA2OTQyNTk",
-    "download_location": "https://api.unsplash.com/photos/1NCcWi24FRs/download?ixid=Mnw0Mjg4Mzd8MHwxfGFsbHx8fHx8fHx8fDE2ODA2OTQyNTk"
-  },
-  "likes": 115,
-  "liked_by_user": false,
-  "current_user_collections": [],
-  "sponsorship": {
-    "impression_urls": [],
-    "tagline": "Ditch plastic. Choose plant based.",
-    "tagline_url": "https://boxedwaterisbetter.com/?utm_source=Unsplash&utm_medium=display&utm_campaign=Brand+Awareness",
-    "sponsor": {
-      "id": "8Ae1yJe8OoA",
-      "updated_at": "2023-04-05T04:06:18Z",
-      "username": "boxedwater",
-      "name": "Boxed Water Is Better",
-      "first_name": "Boxed Water Is Better",
-      "last_name": null,
-      "twitter_username": "boxedwater",
-      "portfolio_url": "https://boxedwaterisbetter.com/?utm_source=brand-referral&utm_medium=unsplash&utm_campaign=stigmatize-plastic",
-      "bio": "👋  We're a sustainable alternative to plastic water bottles.\r\n🚫  Ditch plastic bottles  🌲  Plant trees with us using #BetterPlanet Boxed Water is 100% pure, 92% sustainably packaged & 100%  recyclable. Let’s build a #BetterPlanet together. ",
-      "location": "Holland, MI",
-      "links": {
-        "self": "https://api.unsplash.com/users/boxedwater",
-        "html": "https://unsplash.com/@boxedwater",
-        "photos": "https://api.unsplash.com/users/boxedwater/photos",
-        "likes": "https://api.unsplash.com/users/boxedwater/likes",
-        "portfolio": "https://api.unsplash.com/users/boxedwater/portfolio",
-        "following": "https://api.unsplash.com/users/boxedwater/following",
-        "followers": "https://api.unsplash.com/users/boxedwater/followers"
-      },
-      "profile_image": {
-        "small": "https://images.unsplash.com/profile-1557251674406-effb9d313841?ixlib=rb-4.0.3&crop=faces&fit=crop&w=32&h=32",
-        "medium": "https://images.unsplash.com/profile-1557251674406-effb9d313841?ixlib=rb-4.0.3&crop=faces&fit=crop&w=64&h=64",
-        "large": "https://images.unsplash.com/profile-1557251674406-effb9d313841?ixlib=rb-4.0.3&crop=faces&fit=crop&w=128&h=128"
-      },
-      "instagram_username": "boxedwater",
-      "total_collections": 2,
-      "total_likes": 3,
-      "total_photos": 240,
-      "accepted_tos": true,
-      "for_hire": false,
-      "social": {
-        "instagram_username": "boxedwater",
-        "portfolio_url": "https://boxedwaterisbetter.com/?utm_source=brand-referral&utm_medium=unsplash&utm_campaign=stigmatize-plastic",
-        "twitter_username": "boxedwater",
-        "paypal_email": null
-      }
-    }
-  },
-  "topic_submissions": {},
   "user": {
     "id": "8Ae1yJe8OoA",
     "updated_at": "2023-04-05T04:06:18Z",

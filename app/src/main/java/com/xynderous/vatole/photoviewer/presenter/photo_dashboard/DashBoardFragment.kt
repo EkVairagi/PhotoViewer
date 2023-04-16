@@ -31,6 +31,7 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel.fetchPhotosAPI()
     }
 

@@ -1,5 +1,6 @@
 package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
@@ -16,11 +17,12 @@ class DashBoardViewModel @Inject constructor(
     private val searchPhotosCases: SearchPhotos
 ) : ViewModel() {
 
-    private val _photoDetails = MutableStateFlow(PhotoState())
+     private val _photoDetails = MutableStateFlow(PhotoState())
     val photoDetails = _photoDetails.asStateFlow()
 
     private var pageNumber: Int = 1
     private var searchQuery: String = ""
+
 
     fun fetchPhotosAPI() {
         viewModelScope.launch {
@@ -112,4 +114,6 @@ class DashBoardViewModel @Inject constructor(
             }
         }
     }
+
+
 }

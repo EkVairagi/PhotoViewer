@@ -1,5 +1,6 @@
 package com.xynderous.vatole.photoviewer.presenter.photo_details
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
