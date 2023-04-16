@@ -1,7 +1,6 @@
-package com.xynderous.vatole.photoviewer.presenter.fragments
+package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +16,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xynderous.vatole.photoviewer.R
-import com.xynderous.vatole.photoviewer.adapters.PhotosAdapter
 import com.xynderous.vatole.photoviewer.base.BaseFragment
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.utils.dismissKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

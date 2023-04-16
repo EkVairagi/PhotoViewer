@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.xynderous.vatole.photoviewer.MainCoroutine
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
+import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardViewModel
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

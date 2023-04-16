@@ -1,8 +1,7 @@
-package com.xynderous.vatole.photoviewer.presenter.viewmodels
+package com.xynderous.vatole.photoviewer.presenter.photo_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xynderous.vatole.photoviewer.domain.model.PhotoDetailsState
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
 import com.xynderous.vatole.photoviewer.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel

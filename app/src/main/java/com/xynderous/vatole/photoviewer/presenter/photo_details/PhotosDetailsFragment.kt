@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter.fragments
+package com.xynderous.vatole.photoviewer.presenter.photo_details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.xynderous.vatole.photoviewer.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.FragmentPhotoDetailsBinding
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.PhotoDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

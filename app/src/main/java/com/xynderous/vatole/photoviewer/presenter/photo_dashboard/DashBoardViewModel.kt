@@ -1,15 +1,11 @@
-package com.xynderous.vatole.photoviewer.presenter.viewmodels
+package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
-import com.xynderous.vatole.photoviewer.domain.model.PhotoState
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject

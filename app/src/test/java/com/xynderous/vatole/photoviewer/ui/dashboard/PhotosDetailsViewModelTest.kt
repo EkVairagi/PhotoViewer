@@ -3,11 +3,8 @@ package com.xynderous.vatole.photoviewer.ui.dashboard
 import MockTestUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.xynderous.vatole.photoviewer.MainCoroutine
-import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
-import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.presenter.viewmodels.PhotoDetailsViewModel
+import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsViewModel
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.adapters
+package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

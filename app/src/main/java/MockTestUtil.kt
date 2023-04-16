@@ -1,8 +1,8 @@
 
 import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
 import com.xynderous.vatole.photoviewer.data.model.PhotoModel
-import com.xynderous.vatole.photoviewer.data.model.PhotoUrlsModel
-import com.xynderous.vatole.photoviewer.data.model.UserModel
+import com.xynderous.vatole.photoviewer.domain.model.PhotoUrlsModel
+import com.xynderous.vatole.photoviewer.domain.model.UserModel
 
 
 class MockTestUtil {
