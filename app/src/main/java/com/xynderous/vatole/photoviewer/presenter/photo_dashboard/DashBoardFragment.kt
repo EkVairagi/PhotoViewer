@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xynderous.vatole.photoviewer.R
 import com.xynderous.vatole.photoviewer.base.BaseFragment
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,14 +26,19 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> DashboardFragmentBinding
         get() = DashboardFragmentBinding::inflate
-
     private val viewModel: DashBoardViewModel by viewModels()
     private lateinit var photosAdapter: PhotosAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let { state ->
+            viewModel.restoreState(state)
+        } ?: viewModel.fetchPhotosAPI()
+    }
 
-        viewModel.fetchPhotosAPI()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.saveState(outState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,9 +54,9 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
                     if (it.isLoading) {
                     }
                     if (it.error.isNotBlank()) {
-                        Toast.makeText(requireContext(),it.error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
                     }
-                    it.data?.let { data->
+                    it.data?.let { data ->
                         photosAdapter.differ.submitList(data)
                     }
                 }
@@ -59,7 +65,6 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
         }
     }
-
 
     private fun initViews() {
         val gridLayoutManager = GridLayoutManager(context, 2)
@@ -71,7 +76,6 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
                 bundle
             )
         }
-
         photosAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding?.recyclerPopularPhotos?.adapter = photosAdapter
@@ -90,7 +94,6 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
         binding?.txtSearchPhotos?.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_SEARCH) {
-               // binding?.txtSearchPhotos?.dismissKeyboard()
                 performSearch(binding?.txtSearchPhotos?.text.toString())
             }
             false

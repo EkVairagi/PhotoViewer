@@ -28,7 +28,14 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
             return
         }
 
-        viewModel.loadPhotosById(photo)
+        savedInstanceState?.let { state ->
+            viewModel.restoreState(state)
+        } ?: viewModel.loadPhotosById(photo)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.saveState(outState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +50,7 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
                 if (it.isLoading) {
                 }
                 if (it.error.isNotBlank()) {
-                    Toast.makeText(requireContext(),it.error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
                 }
                 it.data?.apply {
                     binding?.tvUserName?.text = user?.name

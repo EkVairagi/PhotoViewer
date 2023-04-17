@@ -1,12 +1,17 @@
 package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
+import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
+import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.PAGE_NUMBER_KEY
+import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.SEARCH_QUERY_KEY
 import com.xynderous.vatole.photoviewer.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,19 +19,40 @@ import javax.inject.Inject
 @HiltViewModel
 class DashBoardViewModel @Inject constructor(
     private val fetchPopularImages: FetchPopularImages,
-    private val searchPhotosCases: SearchPhotos
+    private val searchPhotosCases: SearchPhotos,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-     private val _photoDetails = MutableStateFlow(PhotoState())
+    private val _photoDetails = MutableStateFlow(PhotoState())
     val photoDetails = _photoDetails.asStateFlow()
+    var pageNumber: Int = 1
+    var searchQuery: String = ""
 
-    private var pageNumber: Int = 1
-    private var searchQuery: String = ""
+    init {
+        savedStateHandle.get<Int>(PAGE_NUMBER_KEY)?.let { savedPageNumber ->
+            pageNumber = savedPageNumber
+        }
+        savedStateHandle.get<String>(SEARCH_QUERY_KEY)?.let { savedSearchQuery ->
+            searchQuery = savedSearchQuery
+        }
+    }
+
+    fun saveState(outState: Bundle) {
+        outState.putInt(PAGE_NUMBER_KEY, pageNumber)
+        outState.putString(SEARCH_QUERY_KEY, searchQuery)
+    }
+
+    fun restoreState(savedInstanceState: Bundle) {
+        pageNumber = savedInstanceState.getInt(PAGE_NUMBER_KEY)
+        searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY, "")
+    }
 
 
     fun fetchPhotosAPI() {
-        viewModelScope.launch {
-            fetchPhotos(pageNumber)
+        if (_photoDetails.value.data.isNullOrEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                fetchPhotos(pageNumber)
+            }
         }
     }
 
@@ -115,5 +141,10 @@ class DashBoardViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        savedStateHandle[PAGE_NUMBER_KEY] = pageNumber
+        savedStateHandle[SEARCH_QUERY_KEY] = searchQuery
+        super.onCleared()
+    }
 
 }
