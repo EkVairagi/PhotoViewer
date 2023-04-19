@@ -6,5 +6,4 @@ data class PhotoState(
     val isLoading: Boolean = false,
     var data: List<PhotoModel>? = null,
     val error: String = "",
-
-    )
+)

@@ -16,8 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xynderous.vatole.photoviewer.R
-import com.xynderous.vatole.photoviewer.base.BaseFragment
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
+import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 

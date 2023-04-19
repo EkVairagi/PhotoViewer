@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.xynderous.vatole.photoviewer.base.BaseFragment
+import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.FragmentPhotoDetailsBinding
 import dagger.hilt.android.AndroidEntryPoint
 

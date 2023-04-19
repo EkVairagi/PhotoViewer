@@ -13,7 +13,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class SearchPhotos @Inject constructor(private val repository: PhotosRepository) {
-    operator fun invoke(query: String,
+    /*operator fun invoke(query: String,
                         pageNumber: Int = 1,
                         pageSize: Int = AppConstants.QUERY_PAGE_SIZE): Flow<Resource<SearchPhotosResponse>> = flow {
         try {
@@ -27,6 +27,14 @@ class SearchPhotos @Inject constructor(private val repository: PhotosRepository)
         } catch (e: Exception) {
 
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(Dispatchers.IO)*/
+
+    suspend operator fun invoke(
+        query: String,
+        pageNumber: Int,
+        pageSize: Int
+    ): Flow<Resource<SearchPhotosResponse>> {
+        return repository.searchPhotos(query, pageNumber, pageSize)
+    }
 
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
+import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.PAGE_NUMBER_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.SEARCH_QUERY_KEY
 import com.xynderous.vatole.photoviewer.utils.Resource
@@ -72,7 +73,7 @@ class DashBoardViewModel @Inject constructor(
 
     fun fetchPhotos(page: Int) {
         viewModelScope.launch {
-            fetchPopularImages(page).collect { dataState ->
+            fetchPopularImages(page,AppConstants.QUERY_PAGE_SIZE,"popular").collect { dataState ->
                 when (dataState) {
                     is Resource.Loading -> {
                         val currentState = _photoDetails.value
@@ -110,7 +111,7 @@ class DashBoardViewModel @Inject constructor(
             _photoDetails.value = PhotoState(isLoading = true, data = emptyList())
         }
         viewModelScope.launch {
-            searchPhotosCases(searchQuery, page).collect { dataState ->
+            searchPhotosCases(searchQuery, page,AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
                 when (dataState) {
                     is Resource.Loading -> {
                         val currentState = _photoDetails.value

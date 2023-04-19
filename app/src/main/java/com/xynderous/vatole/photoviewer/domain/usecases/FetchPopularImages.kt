@@ -13,7 +13,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class FetchPopularImages @Inject constructor(private val repository: PhotosRepository) {
-    operator fun invoke(pageNumber: Int = 1,
+    /*operator fun invoke(pageNumber: Int = 1,
                         pageSize: Int = AppConstants.QUERY_PAGE_SIZE,
                         orderBy: String = "popular"): Flow<Resource<List<PhotoModel>>> = flow {
         try {
@@ -26,8 +26,14 @@ class FetchPopularImages @Inject constructor(private val repository: PhotosRepos
             emit(Resource.Error(message = e.localizedMessage ?: "Check Connectivity"))
         } catch (e: Exception) {
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(Dispatchers.IO)*/
 
-
+    suspend operator fun invoke(
+        pageNumber: Int,
+        pageSize: Int,
+        orderBy: String
+    ): Flow<Resource<List<PhotoModel>>> {
+        return repository.loadPhotos(pageNumber, pageSize, orderBy)
+    }
 }
 

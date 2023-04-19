@@ -14,23 +14,10 @@ import javax.inject.Inject
 
 
 class ImageDescription @Inject constructor(private val repository: PhotosRepository) {
-    operator fun invoke(
-        pageSize: Int = AppConstants.QUERY_PAGE_SIZE,
-        id: String
-    ): Flow<Resource<PhotoModel>> = flow {
-        try {
-            emit(Resource.Loading())
-            val data = repository.imageDescription(id,pageSize)
-
-            emit(Resource.Success(data))
-        } catch (e: HttpException) {
-            emit(Resource.Error(message = e.localizedMessage ?: "An Unknown error occurred"))
-        } catch (e: IOException) {
-            emit(Resource.Error(message = e.localizedMessage ?: "Check Connectivity"))
-        } catch (e: Exception) {
-
-        }
-    }.flowOn(Dispatchers.IO)
-
-
+    suspend operator fun invoke(
+        id: String,
+        pageNumber: Int
+    ): Flow<Resource<PhotoModel>> {
+        return repository.imageDescription(id, pageNumber)
+    }
 }

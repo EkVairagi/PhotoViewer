@@ -5,7 +5,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class PhotoViewerApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-    }
 }

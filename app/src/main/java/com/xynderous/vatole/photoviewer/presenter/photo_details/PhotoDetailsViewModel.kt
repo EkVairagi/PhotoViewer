@@ -8,10 +8,7 @@ import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
 import com.xynderous.vatole.photoviewer.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +25,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     fun loadPhotosById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchPhotos(pageNumber, id)
+            fetchPhotos(id,pageNumber)
         }
     }
 
@@ -46,21 +43,23 @@ class PhotoDetailsViewModel @Inject constructor(
         pageNumber = savedInstanceState.getInt(AppConstants.PAGE_NUMBER_KEY)
     }
 
-    private fun fetchPhotos(page: Int, id: String) {
-        imageDescription(page, id).onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    _photoDetails.value = PhotoDetailsState(isLoading = true)
+    private fun fetchPhotos(id: String,page:Int) {
+        viewModelScope.launch {
+            imageDescription(id,pageNumber).collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        _photoDetails.value = PhotoDetailsState(isLoading = true)
+                    }
+                    is Resource.Error -> {
+                        _photoDetails.value = PhotoDetailsState(error = it.message ?: "")
+                    }
+                    is Resource.Success -> {
+                        _photoDetails.value = PhotoDetailsState(data = it.data)
+                    }
                 }
-                is Resource.Error -> {
-                    _photoDetails.value = PhotoDetailsState(error = it.message ?: "")
-                }
-                is Resource.Success -> {
-                    _photoDetails.value = PhotoDetailsState(data = it.data)
-                }
-            }
 
-        }.launchIn(viewModelScope)
+            }
+        }
     }
 
     override fun onCleared() {

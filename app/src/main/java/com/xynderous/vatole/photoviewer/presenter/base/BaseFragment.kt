@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.base
+package com.xynderous.vatole.photoviewer.presenter.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
