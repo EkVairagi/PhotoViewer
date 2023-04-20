@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xynderous.vatole.photoviewer.R
 import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
+import com.xynderous.vatole.photoviewer.utils.makeVisibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,12 +54,15 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
 
                     when (state) {
                         is PhotoState.Loading -> {
+                            binding?.pbLoading?.makeVisibleIf(true)
                         }
                         is PhotoState.Data -> {
+                            binding?.pbLoading?.makeVisibleIf(false)
                             photosAdapter.differ.submitList(state.photos)
 
                         }
                         is PhotoState.Error -> {
+                            binding?.pbLoading?.makeVisibleIf(false)
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                         }
                     }

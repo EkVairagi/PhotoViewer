@@ -11,7 +11,7 @@ interface PhotosAPI {
     @GET("photos")
     suspend fun loadPhotos(
         @Query("page") page: Int = 1,
-        @Query("per_page") numOfPhotos: Int = 10,
+        @Query("per_page") numOfPhotos: Int = 20,
         @Query("order_by") orderBy: String = "popular"
     ): List<PhotoModel>
 
@@ -19,7 +19,7 @@ interface PhotosAPI {
     suspend fun searchPhotos(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
-        @Query("per_page") numOfPhotos: Int = 10,
+        @Query("per_page") numOfPhotos: Int = 20,
     ): SearchPhotosResponse
 
 

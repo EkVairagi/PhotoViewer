@@ -1,95 +1,54 @@
 package com.xynderous.vatole.photoviewer.data.usescases
 
-import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
+import MockTestUtil
+import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
+import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.utils.Resource
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.flow.first
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.Before
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import org.mockito.Mockito
 
-@RunWith(JUnit4::class)
 class FetchPopularImagesTest {
-
-    @MockK
-    private lateinit var repository: PhotosRepository
-
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
-
+    val repository = mockk<PhotosRepository>()
+    private val useCase = FetchPopularImages(repository)
 
     @Test
-    fun `test invoking FetchPopularPhotosUsecase gives list of photos`() = runBlocking {
-
+    fun `fetch popular images - success`() = runBlockingTest {
         // Given
-        val usecase = FetchPopularImages(repository)
-        val givenPhotos = MockTestUtil.createPhotos(3)
-
         // When
-        coEvery { repository.loadPhotos(any(), any(), any()) }
-            .returns(givenPhotos)
-
-        // Invoke
-        val photosListFlow = usecase(1, 1, "")
+        val photos = MockTestUtil.createPhotos(10)
+        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(Resource.Success(photos))
+        val result = useCase(1, 10, "popular").toList()
 
         // Then
-        MatcherAssert.assertThat(photosListFlow, CoreMatchers.notNullValue())
-
-        val photosListDataState = photosListFlow.first()
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-
-        if (photosListDataState is Resource.Success) {
-            val photosList = photosListDataState.data
-            MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-            MatcherAssert.assertThat(photosList?.size, CoreMatchers.`is`(givenPhotos.size))
-        } else if (photosListDataState is Resource.Error) {
-            // Handle the error case
-            val errorMessage = photosListDataState.message
-            MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
-            MatcherAssert.assertThat(errorMessage, CoreMatchers.equalTo("Test Error Message"))
-        }
-
+        verify { repository.loadPhotos(1, 10, "popular") }
+        assertTrue(result.size == 1)
+        assertTrue(result[0] is Resource.Success)
+        assertEquals(photos, (result[0] as Resource.Success<List<PhotoModel>>).data)
     }
 
     @Test
-    fun `test invoking FetchPopularPhotosUsecase gives error`() = runBlocking {
-
+    fun `fetch popular images - error`() = runBlockingTest {
         // Given
-        val usecase = FetchPopularImages(repository)
-        val givenErrorMessage = "Test Error Message"
+        val errorMsg = "Error fetching popular images"
+        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(Resource.Error(errorMsg))
 
         // When
-
-        coEvery { repository.loadPhotos(any(),any(),any()) }
-
-
-        // Invoke
-        val photosListFlow = usecase(1, 1, "")
+        val result = useCase(1, 10, "popular").toList()
 
         // Then
-        MatcherAssert.assertThat(photosListFlow, CoreMatchers.notNullValue())
-
-        val photosListDataState = photosListFlow.first()
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(
-            photosListDataState,
-            CoreMatchers.instanceOf(Resource.Error::class.java)
-        )
-
-        val errorMessage = (photosListDataState as Resource.Error).message
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.`is`(givenErrorMessage))
+        verify { repository.loadPhotos(1, 10, "popular") }
+        assertTrue(result.size == 1)
+        assertTrue(result[0] is Resource.Error)
+        assertEquals(errorMsg, (result[0] as Resource.Error).message)
     }
-
 }
+
+

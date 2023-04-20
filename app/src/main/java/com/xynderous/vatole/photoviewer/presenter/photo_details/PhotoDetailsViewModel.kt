@@ -21,7 +21,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val _photoDetails = MutableStateFlow<PhotoDetailsState>(PhotoDetailsState.Loading)
     val photoDetails: StateFlow<PhotoDetailsState> = _photoDetails
 
-    private var pageNumber: Int = 1
+    var pageNumber: Int = 1
 
     fun loadPhotosById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {

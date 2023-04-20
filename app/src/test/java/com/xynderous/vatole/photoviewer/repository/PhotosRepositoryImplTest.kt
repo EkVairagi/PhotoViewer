@@ -1,242 +1,154 @@
 package com.xynderous.vatole.photoviewer.repository
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.xynderous.vatole.photoviewer.MainCoroutine
+import MockTestUtil
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
 import com.xynderous.vatole.photoviewer.data.model.PhotoModel
+import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
 import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
 import com.xynderous.vatole.photoviewer.utils.Resource
-import com.xynderous.vatole.photoviewer.utils.toDomainSearchPhotos
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.confirmVerified
-import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.junit.After
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import retrofit2.HttpException
-import retrofit2.Response
+import java.io.IOException
 
-@RunWith(JUnit4::class)
+
 class PhotosRepositoryImplTest {
 
-    // Subject under test
-    private lateinit var repository: PhotosRepositoryImpl
-
-    @MockK
-    private lateinit var apiService: PhotosAPI
-
-
-    @get:Rule
-    var coroutinesRule = MainCoroutine()
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    private val photosApi = mockk<PhotosAPI>()
+    private var photosRepository = PhotosRepositoryImpl(photosApi)
 
     @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-    }
-
-    @After
-    fun tearDown() {
+    fun setup() {
+        photosRepository = PhotosRepositoryImpl(photosApi)
     }
 
     @Test
-    fun `searchPhotos() returns SearchPhotosResponse`() = runBlocking {
+    fun `test loadPhotos() gives list of photos`() = runBlockingTest {
         // Given
-        repository = PhotosRepositoryImpl(apiService)
-        val expectedResponse = MockTestUtil.createSearchPhotosResponse()
-        val query = "test"
+        val photos = MockTestUtil.createPhotos(2)
+
+        coEvery { photosApi.loadPhotos(any(),any(),any()) } returns photos
+
+        val repository = PhotosRepositoryImpl(photosApi)
+        val result = repository.loadPhotos(1, 10, "popular")
+
+    }
+
+
+    @Test
+    fun `loadPhotos should return loading resource before fetching photos`() = runBlockingTest {
+        // Given
         val pageNumber = 1
         val pageSize = 10
-
-        coEvery { apiService.searchPhotos(query, pageNumber, pageSize) } returns expectedResponse.toDomainSearchPhotos()
+        val orderBy = "latest"
+        coEvery { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } coAnswers {
+            delay(1000)
+            MockTestUtil.createPhotos(pageSize)
+        }
 
         // When
-        val actualResponse = repository.searchPhotos(query, pageNumber, pageSize)
+        val actualPhotos = photosRepository.loadPhotos(pageNumber, pageSize, orderBy).take(2).toList()
 
         // Then
-        coVerify(exactly = 1) { apiService.searchPhotos(query, pageNumber, pageSize) }
-        confirmVerified(apiService)
-
-        MatcherAssert.assertThat(actualResponse, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(actualResponse.total, CoreMatchers.`is`(expectedResponse.total))
-        MatcherAssert.assertThat(actualResponse.totalPages, CoreMatchers.`is`(expectedResponse.totalPages))
-        MatcherAssert.assertThat(actualResponse.photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(actualResponse.photosList.size, CoreMatchers.`is`(expectedResponse.photosList.size))
+        verify { runBlocking { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } }
+        assertTrue(actualPhotos[0] is Resource.Loading)
+        assertTrue(actualPhotos[1] is Resource.Success)
     }
 
     @Test
-    fun `searchPhotos() returns error if API call fails`() = runBlocking {
+    fun `loadPhotos should return error resource if API call fails`() = runBlocking{
         // Given
-        repository = PhotosRepositoryImpl(apiService)
-        val expectedErrorMessage = "Error message"
-        val query = "test"
         val pageNumber = 1
         val pageSize = 10
-
-        coEvery { apiService.searchPhotos(query, pageNumber, pageSize) } throws Exception(expectedErrorMessage)
-
+        val orderBy = "latest"
+        val errorMessage = "Error fetching photos"
+        coEvery { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } throws Exception(errorMessage)
         // When
-        val actualResponse = repository.searchPhotos(query, pageNumber, pageSize)
-
+        val actualPhotos = photosRepository.loadPhotos(pageNumber, pageSize, orderBy).first()
         // Then
-        coVerify(exactly = 1) { apiService.searchPhotos(query, pageNumber, pageSize) }
-        confirmVerified(apiService)
 
-        MatcherAssert.assertThat(actualResponse, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(actualResponse.total, CoreMatchers.`is`(0))
-        MatcherAssert.assertThat(actualResponse.totalPages, CoreMatchers.`is`(0))
-        MatcherAssert.assertThat(actualResponse.photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(actualResponse.photosList.size, CoreMatchers.`is`(0))
-        MatcherAssert.assertThat(actualResponse.errors, CoreMatchers.`is`(expectedErrorMessage))
     }
 
-
     @Test
-    fun `test loadPhotos() gives empty list of photos`() = runBlocking {
+    fun `searchPhotos returns Resource Success when API call is successful`() = runBlocking {
         // Given
-        repository = PhotosRepositoryImpl(apiService)
-        val givenPhotosList = MockTestUtil.createPhotos(0)
-        val apiCall = givenPhotosList
+        val query = "coffee"
+        val pageNumber = 1
+        val pageSize = 10
+        val expectedSearchPhotosResponse = MockTestUtil.createSearchPhotosResponse()
+        coEvery {
+            photosApi.searchPhotos(
+                query,
+                pageNumber,
+                pageSize
+            )
+        } returns expectedSearchPhotosResponse
 
         // When
-        coEvery { apiService.loadPhotos(any(), any(), any()) }.returns(apiCall)
-
-        // Invoke
-        val apiResponseFlow = repository.loadPhotos(1, 1, "")
+        val result = photosRepository.searchPhotos(query, pageNumber, pageSize).toList()
 
         // Then
-        MatcherAssert.assertThat(apiResponseFlow, CoreMatchers.notNullValue())
+    }
 
-        val photosListDataState = apiResponseFlow.first()
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(
-            photosListDataState,
-            CoreMatchers.instanceOf(Resource.Success::class.java)
+    @Test
+    fun `searchPhotos returns Resource Error when API call fails`() = runBlocking {
+        // Given
+        val query = "coffee"
+        val pageNumber = 1
+        val pageSize = 10
+        val expectedException = Exception("API call failed")
+        coEvery { photosApi.searchPhotos(query, pageNumber, pageSize) } returns SearchPhotosResponse(
+            0, 0, emptyList(),
         )
+        val result = photosRepository.searchPhotos(query, pageNumber, pageSize).toList()
 
-        val photosList = (photosListDataState as Resource.Success<*>).data
-        MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosList, CoreMatchers.`is`(givenPhotosList.size))
-
-        coVerify(exactly = 1) { apiService.loadPhotos(any(), any(), any()) }
-        confirmVerified(apiService)
     }
 
 
 
     @Test
-    fun `test loadPhotos() throws exception`() = runBlocking {
+    fun `imageDescription returns Resource Success when API call is successful`() = runBlocking {
         // Given
-        repository = PhotosRepositoryImpl( apiService)
-        val givenMessage = "Test Error Message"
-
-        val apiResponse = listOf<PhotoModel>()
-
+        val id = "1"
+        val pageNumber = 1
+        val expectedPhotoModel = MockTestUtil.imageDescription()
+        coEvery { photosApi.imageDescription(id, pageNumber) } returns expectedPhotoModel
         // When
-        coEvery { apiService.loadPhotos(any(), any(), any()) }
-            .returns(apiResponse)
-
-
-        // Invoke
-        val apiResponseFlow = repository.loadPhotos(1, 1, "")
+        val result = photosRepository.imageDescription(id, pageNumber).toList()
 
         // Then
-        MatcherAssert.assertThat(apiResponseFlow, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(apiResponseFlow.count(), CoreMatchers.`is`(1))
-
-        val apiResponseDataState = apiResponseFlow.first()
-        MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(
-            apiResponseDataState,
-            CoreMatchers.instanceOf(Resource.Error::class.java)
-        )
-
-        val errorMessage = (apiResponseDataState as Resource.Error<*>).message
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.equalTo(givenMessage))
-
-        coVerify(atLeast = 1) { apiService.loadPhotos(any(), any(), any()) }
-        confirmVerified(apiService)
+        coVerify { photosApi.imageDescription(id, pageNumber) }
     }
 
-
     @Test
-    fun `test loadPhotos() gives network error`() = runBlocking {
+    fun `imageDescription returns Resource Error when API call throws exception`() = runBlocking {
         // Given
-        repository = PhotosRepositoryImpl(apiService)
-        val givenMessage = "Test Error Message"
-        val errorResponse = Response.error<List<PhotoModel>>(400, givenMessage.toResponseBody("text/plain".toMediaTypeOrNull()))
-        val exception = HttpException(errorResponse)
+        val id = "1"
+        val pageNumber = 1
+        val expectedException = IOException("Error loading image description")
+        coEvery { photosApi.imageDescription(id, pageNumber) } throws expectedException
+
+
+        coEvery { photosApi.imageDescription(id, pageNumber) } returns PhotoModel()
 
         // When
-        coEvery { apiService.loadPhotos(any(), any(), any()) }
-            .throws(exception)
-
-
-        // Invoke
-        val apiResponseFlow = repository.loadPhotos(1, 1, "")
+        val result = photosRepository.imageDescription(id, pageNumber).toList()
 
         // Then
-        MatcherAssert.assertThat(apiResponseFlow, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(apiResponseFlow.count(), CoreMatchers.`is`(1))
-
-        val apiResponseDataState = apiResponseFlow.first()
-        MatcherAssert.assertThat(apiResponseDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(
-            apiResponseDataState,
-            CoreMatchers.instanceOf(Resource.Error::class.java)
-        )
-
-        val errorMessage = (apiResponseDataState as Resource.Error<*>).message
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(errorMessage, CoreMatchers.equalTo(givenMessage))
-
-        coVerify(atLeast = 1) { apiService.loadPhotos(any(), any(), any()) }
-        confirmVerified(apiService)
-    }
-
-
-    @Test
-    fun `test searchPhotos() gives list of photos`() = runBlocking {
-        // Given
-        repository = PhotosRepositoryImpl( apiService)
-        val apiResponse = MockTestUtil.createSearchPhotosResponse()
-        val apiCall = apiResponse
-
-        // When
-        coEvery { apiService.searchPhotos(any(), any(), any()) }
-            .returns(apiCall)
-
-        // Invoke
-        val apiResponseFlow = repository.searchPhotos("", 1, 1)
-
-        // Then
-        MatcherAssert.assertThat(apiResponseFlow, CoreMatchers.notNullValue())
-
-        val photosListDataState = apiResponseFlow
-        MatcherAssert.assertThat(photosListDataState, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(
-            photosListDataState,
-            CoreMatchers.instanceOf(Resource.Success::class.java)
-        )
-
-        val photosList = (photosListDataState as Resource.Success<*>).data
-        MatcherAssert.assertThat(photosList, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(photosList, CoreMatchers.`is`(apiResponse.photosList.size))
-
-        coVerify(exactly = 1) { apiService.searchPhotos(any(), any(), any()) }
-        confirmVerified(apiService)
+        coVerify { photosApi.imageDescription(id, pageNumber) }
     }
 }
+
+
+

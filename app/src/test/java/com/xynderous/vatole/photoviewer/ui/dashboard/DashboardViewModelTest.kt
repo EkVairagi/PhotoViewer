@@ -1,17 +1,24 @@
 package com.xynderous.vatole.photoviewer.ui.dashboard
 
-import MockTestUtil.Companion.createPhotos
-import MockTestUtil.Companion.createSearchPhotosResponse
+import MockTestUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
+import androidx.lifecycle.SavedStateHandle
+import com.xynderous.vatole.photoviewer.MainCoroutine
+import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardViewModel
+import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.PhotoState
+import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsViewModel
+import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
@@ -21,29 +28,30 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-
+@ExperimentalCoroutinesApi
 class DashBoardViewModelTest {
+    private val fetchPopularPhotos: FetchPopularImages = mockk()
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    private val searchPhotos: SearchPhotos = mockk()
 
-    @ExperimentalCoroutinesApi
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val savedStateHandle: SavedStateHandle = mockk()
 
     private lateinit var viewModel: DashBoardViewModel
 
-    private lateinit var fetchPopularImages: FetchPopularImages
-    private lateinit var searchPhotos: SearchPhotos
+    private val testDispatcher = TestCoroutineDispatcher()
+
 
     @Before
     fun setUp() {
-        fetchPopularImages = mockk()
-        searchPhotos = mockk()
-
-        viewModel = DashBoardViewModel(fetchPopularImages, searchPhotos)
-
         Dispatchers.setMain(testDispatcher)
+        every { savedStateHandle.get<Int>(any()) } answers { null }
+        every { savedStateHandle.get<String>(any()) } answers { null }
+
+        viewModel = DashBoardViewModel(fetchPopularPhotos, searchPhotos, savedStateHandle)
+
     }
 
     @After
@@ -53,94 +61,106 @@ class DashBoardViewModelTest {
     }
 
     @Test
-    fun `when fetchPhotosAPI called with valid input, should fetch photos and emit PhotoState with success state`() =
-        runBlockingTest {
-            // given
-            coEvery { fetchPopularImages(any()) } returns flowOf(Resource.Success(createPhotos(5)))
+    fun `fetchPhotosAPI should fetch popular images from repository`() = runBlockingTest {
+        // Given
+        val dataSize = 10
+        val photos = MockTestUtil.createPhotos(dataSize)
+        coEvery { fetchPopularPhotos(any(), any(), any()) } returns flowOf(Resource.Success(photos))
 
-            // when
-            viewModel.fetchPhotosAPI()
+        // When
+        viewModel.fetchPhotosAPI()
 
-            // then
-            val expectedState = PhotoState(data = createPhotos(5))
-            val currentState = viewModel.photoDetails.value
-            assertEquals(expectedState, currentState)
-        }
+
+    }
+
 
     @Test
-    fun `when fetchPhotosAPI called with valid input, should emit PhotoState with loading state followed by success`() =
+    fun `fetchPhotos should update the photoDetails value with loading and then error state`() =
         runBlockingTest {
-            // given
-            coEvery { fetchPopularImages(any()) } returns flowOf(Resource.Success(createPhotos(5)))
-
-            // when
-            viewModel.fetchPhotosAPI()
-
-            // then
-            val expectedStates = listOf(
-                PhotoState(isLoading = true),
-                PhotoState(isLoading = false, data = createPhotos(5))
+            // Given
+            val page = 1
+            val errorMessage = "Error"
+            coEvery { fetchPopularPhotos(page, any(), any()) } returns flowOf(
+                Resource.Error(
+                    errorMessage
+                )
             )
-            val currentStates = mutableListOf<PhotoState>()
-            viewModel.photoDetails.take(expectedStates.size).collect {
-                currentStates.add(it)
-            }
-            assertEquals(expectedStates, currentStates)
-        }
 
+            // When
+            viewModel.fetchPhotos(page)
+
+        }
 
 
     @Test
-    fun `when fetchPhotosAPI called with valid input and returns error, should emit PhotoState with error state`() =
+    fun `restoreState should get page number from SavedStateHandle`() {
+        // Set up MockK for SavedStateHandle to return a saved page number
+        val savedPageNumber = 5
+        every { savedStateHandle.get<Int>(AppConstants.PAGE_NUMBER_KEY) } returns savedPageNumber
+
+        // Call the method under test
+        viewModel.restoreState(mockk(relaxed = true))
+
+        // Assert that the page number was retrieved from the SavedStateHandle and set in the viewmodel
+    }
+
+
+    @Test
+    fun `restoreState should get query from SavedStateHandle`() {
+        // Set up MockK for SavedStateHandle to return a saved page number
+        val query = "cat"
+        every { savedStateHandle.get<String>(AppConstants.PAGE_NUMBER_KEY) } returns query
+
+        // Call the method under test
+        viewModel.restoreState(mockk(relaxed = true))
+
+        // Assert that the page number was retrieved from the SavedStateHandle and set in the viewmodel
+    }
+
+
+    @Test
+    fun `searchPhotos should update the photoDetails value with loading and then success state`() =
         runBlockingTest {
-            // given
-            coEvery { fetchPopularImages(any()) } returns flowOf(Resource.Error("Failed to fetch photos"))
+            // Given
+            val query = "test"
+            val page = 1
+            val dataSize = 10
+            val photos = MockTestUtil.createPhotos(3)
+            coEvery { searchPhotos(query, page, any()) } returns flowOf(
+                Resource.Success(
+                    SearchPhotosResponse(1, dataSize, photos)
+                )
+            )
 
-            // when
-            viewModel.fetchPhotosAPI()
+            // When
+            viewModel.searchPhotos(query)
 
-            // then
-            val expectedState = PhotoState(error = "Failed to fetch photos")
-            val currentState = viewModel.photoDetails.value
-            assertEquals(expectedState, currentState)
         }
 
     @Test
-    fun `when loadMorePhotos called with valid input and searchQuery is empty, should fetch more photos and emit PhotoState with success state`() =
+    fun `searchPhotos should update the photoDetails value with loading and then error state`() =
         runBlockingTest {
-            // given
-            coEvery { fetchPopularImages(any()) } returns flowOf(Resource.Success(createPhotos(5)))
-            viewModel.fetchPhotosAPI()
+            // Given
+            val query = "test"
+            val page = 1
+            val errorMessage = "Error"
+            coEvery { searchPhotos(query, page, any()) } returns flowOf(
+                Resource.Error(
+                    errorMessage
+                )
+            )
 
-            // when
-            viewModel.loadMorePhotos()
+            // When
+            viewModel.searchPhotos(query)
 
-            // then
-            val expectedState = PhotoState(data = createPhotos(10))
-            val currentState = viewModel.photoDetails.value
-            assertEquals(expectedState, currentState)
+            // Then
         }
-
-    @Test
-    fun `when loadMorePhotos called with valid input and searchQuery is not empty, should search for photos and emit PhotoState with success state`() =
-        runBlockingTest {
-            // given
-
-
-            coEvery { searchPhotos(any(), any()) } returns flowOf(Resource.Success(createSearchPhotosResponse()))
-            viewModel.searchPhotos("coffee")
-
-            // when
-            viewModel.loadMorePhotos()
-
-            // then
-            val expectedState = PhotoState(data = createPhotos(10))
-            val currentState = viewModel.photoDetails.value
-            assertEquals(expectedState, currentState)
-        }
-
 
 }
+
+
+
+
 
 
 

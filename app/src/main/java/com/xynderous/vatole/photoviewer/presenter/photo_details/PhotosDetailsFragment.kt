@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.FragmentPhotoDetailsBinding
+import com.xynderous.vatole.photoviewer.utils.makeVisibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,14 +49,17 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
             viewModel.photoDetails.collect { state->
                 when (state) {
                     is PhotoDetailsState.Loading -> {
+                        binding?.pbLoading?.makeVisibleIf(true)
                     }
                     is PhotoDetailsState.Data -> {
+                        binding?.pbLoading?.makeVisibleIf(false)
                         binding?.tvUserName?.text = state.photos?.user?.name
                         binding?.tvLocation?.text = state.photos?.user?.location
                         binding?.tvDesc?.text = state.photos?.alt_description
                         binding?.photoView?.load(state.photos?.urls?.full)
                     }
                     is PhotoDetailsState.Error -> {
+                        binding?.pbLoading?.makeVisibleIf(false)
                         Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                     }
                 }
