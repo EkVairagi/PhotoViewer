@@ -14,3 +14,10 @@ fun EditText.dismissKeyboard() {
         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     imm?.hideSoftInputFromWindow(windowToken, 0)
 }
+
+fun View?.makeVisibleIf(condition: Boolean) {
+    when (condition) {
+        true -> this?.visibility = View.VISIBLE
+        else -> this?.visibility = View.GONE
+    }
+}

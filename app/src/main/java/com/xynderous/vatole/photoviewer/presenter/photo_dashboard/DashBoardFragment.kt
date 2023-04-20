@@ -49,19 +49,21 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
     private fun initObserver() {
         lifecycle.coroutineScope.launchWhenCreated {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.photoDetails.collect {
-                    if (it.isLoading) {
-                    }
-                    if (it.error.isNotBlank()) {
-                        Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
-                    }
-                    it.data?.let { data ->
-                        photosAdapter.differ.submitList(data)
+                viewModel.photoDetails.collect {state->
+
+                    when (state) {
+                        is PhotoState.Loading -> {
+                        }
+                        is PhotoState.Data -> {
+                            photosAdapter.differ.submitList(state.photos)
+
+                        }
+                        is PhotoState.Error -> {
+                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-
-
         }
     }
 

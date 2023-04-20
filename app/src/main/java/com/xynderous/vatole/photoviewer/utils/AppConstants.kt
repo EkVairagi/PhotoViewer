@@ -7,5 +7,6 @@ class AppConstants {
         const val QUERY_PAGE_SIZE = 20
         const val PAGE_NUMBER_KEY = "page_number_key"
         const val SEARCH_QUERY_KEY = "search_query_key"
+        const val POPULAR = "popular"
     }
 }

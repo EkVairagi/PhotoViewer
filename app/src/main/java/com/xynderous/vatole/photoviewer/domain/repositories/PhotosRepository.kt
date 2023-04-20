@@ -8,25 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface PhotosRepository {
 
-/*
-    suspend fun loadPhotos(
-        pageNumber: Int,
-        pageSize: Int,
-        orderBy: String
-    ): List<PhotoModel>
-
-    suspend fun searchPhotos(
-        query: String,
-        pageNumber: Int,
-        pageSize: Int
-    ): SearchPhotosResponse
-
-    suspend fun imageDescription(
-        id: String,
-        pageNumber: Int
-    ): PhotoModel
-*/
-
         fun loadPhotos(
             pageNumber: Int,
             pageSize: Int,

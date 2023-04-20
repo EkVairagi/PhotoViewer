@@ -44,19 +44,20 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
     }
 
     private fun initObserver() {
-
         lifecycle.coroutineScope.launchWhenCreated {
-            viewModel.photoDetails.collect {
-                if (it.isLoading) {
-                }
-                if (it.error.isNotBlank()) {
-                    Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
-                }
-                it.data?.apply {
-                    binding?.tvUserName?.text = user?.name
-                    binding?.tvLocation?.text = user?.location
-                    binding?.tvDesc?.text = alt_description
-                    binding?.photoView?.load(urls?.full)
+            viewModel.photoDetails.collect { state->
+                when (state) {
+                    is PhotoDetailsState.Loading -> {
+                    }
+                    is PhotoDetailsState.Data -> {
+                        binding?.tvUserName?.text = state.photos?.user?.name
+                        binding?.tvLocation?.text = state.photos?.user?.location
+                        binding?.tvDesc?.text = state.photos?.alt_description
+                        binding?.photoView?.load(state.photos?.urls?.full)
+                    }
+                    is PhotoDetailsState.Error -> {
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

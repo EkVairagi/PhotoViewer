@@ -1,6 +1,7 @@
 package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,9 +12,13 @@ import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.PAGE_NUMBER_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.SEARCH_QUERY_KEY
 import com.xynderous.vatole.photoviewer.utils.Resource
+import com.xynderous.vatole.photoviewer.utils.toDomainPhotos
+import com.xynderous.vatole.photoviewer.utils.toDomainSearchPhotos
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +29,8 @@ class DashBoardViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _photoDetails = MutableStateFlow(PhotoState())
-    val photoDetails = _photoDetails.asStateFlow()
+    private val _photoDetails = MutableStateFlow<PhotoState>(PhotoState.Loading)
+    val photoDetails: StateFlow<PhotoState> = _photoDetails
     var pageNumber: Int = 1
     var searchQuery: String = ""
 
@@ -50,7 +55,7 @@ class DashBoardViewModel @Inject constructor(
 
 
     fun fetchPhotosAPI() {
-        if (_photoDetails.value.data.isNullOrEmpty()) {
+        if (_photoDetails.value == PhotoState.Loading) {
             viewModelScope.launch(Dispatchers.IO) {
                 fetchPhotos(pageNumber)
             }
@@ -73,32 +78,19 @@ class DashBoardViewModel @Inject constructor(
 
     fun fetchPhotos(page: Int) {
         viewModelScope.launch {
-            fetchPopularImages(page,AppConstants.QUERY_PAGE_SIZE,"popular").collect { dataState ->
+            val currentData = (_photoDetails.value as? PhotoState.Data)?.photos ?: emptyList()
+            _photoDetails.value = PhotoState.Loading
+            fetchPopularImages(page, AppConstants.QUERY_PAGE_SIZE, "popular").collect { dataState ->
                 when (dataState) {
                     is Resource.Loading -> {
-                        val currentState = _photoDetails.value
-                        val updatedState = currentState.copy(
-                            isLoading = true,
-                        )
-                        _photoDetails.emit(updatedState)
+                        // Handle loading state
                     }
                     is Resource.Success -> {
-                        val currentState = _photoDetails.value
-
-                        val updatedState = currentState.copy(
-                            data = (currentState.data ?: mutableListOf()) + (dataState.data
-                                ?: mutableListOf())
-                        )
-                        _photoDetails.emit(updatedState)
-
+                        val newData = dataState.data ?: emptyList()
+                        _photoDetails.value = PhotoState.Data(currentData + newData)
                     }
                     is Resource.Error -> {
-                        val currentState = _photoDetails.value
-                        val updatedState = currentState.copy(
-                            isLoading = false,
-                            error = dataState.message ?: ""
-                        )
-                        _photoDetails.emit(updatedState)
+                        _photoDetails.value = PhotoState.Error(dataState.message.orEmpty())
                     }
                 }
             }
@@ -106,41 +98,30 @@ class DashBoardViewModel @Inject constructor(
     }
 
 
-    fun searchPhotos(page: Int, searchQuery: String) {
-        if (page == 1) {
-            _photoDetails.value = PhotoState(isLoading = true, data = emptyList())
-        }
+
+    fun searchPhotos(page: Int, query: String) {
         viewModelScope.launch {
-            searchPhotosCases(searchQuery, page,AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
+            val currentData = if (page > 1) (_photoDetails.value as? PhotoState.Data)?.photos.orEmpty() else emptyList()
+            _photoDetails.value = PhotoState.Loading
+            searchPhotosCases(query, page, AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
                 when (dataState) {
                     is Resource.Loading -> {
-                        val currentState = _photoDetails.value
-                        val updatedState = currentState.copy(isLoading = true)
-                        _photoDetails.emit(updatedState)
+                        // Handle loading state
                     }
                     is Resource.Success -> {
-                        val currentState = _photoDetails.value
-                        val existingData = currentState.data.orEmpty()
                         val newData = dataState.data?.photosList.orEmpty()
-                        val updatedState = currentState.copy(
-                            data = existingData + newData,
-                            isLoading = false,
-                            error = ""
-                        )
-                        _photoDetails.emit(updatedState)
+                        val updatedList = currentData + newData
+                        _photoDetails.value = PhotoState.Data(updatedList)
                     }
                     is Resource.Error -> {
-                        val currentState = _photoDetails.value
-                        val updatedState = currentState.copy(
-                            isLoading = false,
-                            error = dataState.message ?: ""
-                        )
-                        _photoDetails.emit(updatedState)
+                        _photoDetails.value = PhotoState.Error(dataState.message.orEmpty())
                     }
                 }
             }
         }
     }
+
+
 
     override fun onCleared() {
         savedStateHandle[PAGE_NUMBER_KEY] = pageNumber

@@ -18,25 +18,6 @@ fun PhotoModel.toDomainPhotos(): PhotoModel {
     )
 }
 
-fun PhotoUrlsModel.toDomainPhotosUrls(): PhotoUrlsModel {
-    return PhotoUrlsModel(
-        raw = this.raw ?: "",
-        full = this.full ?: "",
-        regular = this.regular ?: "",
-        small = this.small ?: "",
-        thumb = this.thumb ?: ""
-    )
-}
-
-fun UserModel.toDomainUserModel(): UserModel {
-    return UserModel(
-        id = this.id ?: "",
-        username = this.username ?: "",
-        location = this.location ?: "",
-        name = this.name ?: ""
-    )
-}
-
 fun SearchPhotosResponse.toDomainSearchPhotos(): SearchPhotosResponse {
     return SearchPhotosResponse(
         total = this.total,

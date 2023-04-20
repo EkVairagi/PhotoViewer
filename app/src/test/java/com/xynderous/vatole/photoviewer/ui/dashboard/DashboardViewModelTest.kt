@@ -7,7 +7,6 @@ import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.PhotoState
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

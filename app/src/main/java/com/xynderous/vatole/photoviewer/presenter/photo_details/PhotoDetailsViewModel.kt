@@ -18,7 +18,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val imageDescription: ImageDescription,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _photoDetails = MutableStateFlow(PhotoDetailsState())
+    private val _photoDetails = MutableStateFlow<PhotoDetailsState>(PhotoDetailsState.Loading)
     val photoDetails: StateFlow<PhotoDetailsState> = _photoDetails
 
     private var pageNumber: Int = 1
@@ -45,22 +45,23 @@ class PhotoDetailsViewModel @Inject constructor(
 
     private fun fetchPhotos(id: String,page:Int) {
         viewModelScope.launch {
-            imageDescription(id,pageNumber).collect {
-                when (it) {
+            imageDescription(id,pageNumber).collect { dataState->
+                when (dataState) {
                     is Resource.Loading -> {
-                        _photoDetails.value = PhotoDetailsState(isLoading = true)
+                        _photoDetails.value = PhotoDetailsState.Loading
                     }
                     is Resource.Error -> {
-                        _photoDetails.value = PhotoDetailsState(error = it.message ?: "")
+                        _photoDetails.value = PhotoDetailsState.Error(dataState.message ?: "")
                     }
                     is Resource.Success -> {
-                        _photoDetails.value = PhotoDetailsState(data = it.data)
+                        _photoDetails.value = PhotoDetailsState.Data(dataState.data)
                     }
                 }
 
             }
         }
     }
+
 
     override fun onCleared() {
         savedStateHandle[AppConstants.PAGE_NUMBER_KEY] = pageNumber
