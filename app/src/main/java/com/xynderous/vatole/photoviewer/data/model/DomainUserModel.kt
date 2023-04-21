@@ -1,10 +1,8 @@
-package com.xynderous.vatole.photoviewer.domain.model
+package com.xynderous.vatole.photoviewer.data.model
 
-
-data class UserModel(
+data class DomainUserModel(
     val id: String?,
     val username: String?,
     val location: String?,
     val name: String?
 )
-

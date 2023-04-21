@@ -1,7 +1,6 @@
-package com.xynderous.vatole.photoviewer.domain.model
+package com.xynderous.vatole.photoviewer.data.model
 
-
-data class PhotoUrlsModel(
+data class DomainPhotoUrlsModel(
     val raw: String?,
     val full: String?,
     val regular: String?,

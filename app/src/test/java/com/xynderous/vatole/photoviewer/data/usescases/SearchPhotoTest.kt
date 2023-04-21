@@ -1,30 +1,18 @@
 package com.xynderous.vatole.photoviewer.data.usescases
 
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
-import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.utils.Resource
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
-
 
 
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
 class SearchPhotosTest {
 

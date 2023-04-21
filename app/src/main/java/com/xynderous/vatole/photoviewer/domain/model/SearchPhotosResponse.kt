@@ -1,6 +1,7 @@
-package com.xynderous.vatole.photoviewer.data.model
+package com.xynderous.vatole.photoviewer.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 
 data class SearchPhotosResponse(
     @SerializedName("total") val total: Int,

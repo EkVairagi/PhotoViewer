@@ -2,7 +2,7 @@ package com.xynderous.vatole.photoviewer.data.usescases
 
 
 import MockTestUtil
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
+import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
 import com.xynderous.vatole.photoviewer.utils.Resource

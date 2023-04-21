@@ -1,35 +1,24 @@
 package com.xynderous.vatole.photoviewer.ui.dashboard
 
 import MockTestUtil
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.xynderous.vatole.photoviewer.MainCoroutine
-import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.data.model.DomainSearchPhotosResponse
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardViewModel
-import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.PhotoState
-import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsViewModel
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
 class DashBoardViewModelTest {
@@ -82,8 +71,7 @@ class DashBoardViewModelTest {
             val errorMessage = "Error"
             coEvery { fetchPopularPhotos(page, any(), any()) } returns flowOf(
                 Resource.Error(
-                    errorMessage
-                )
+                    errorMessage, emptyList())
             )
 
             // When
@@ -128,7 +116,7 @@ class DashBoardViewModelTest {
             val photos = MockTestUtil.createPhotos(3)
             coEvery { searchPhotos(query, page, any()) } returns flowOf(
                 Resource.Success(
-                    SearchPhotosResponse(1, dataSize, photos)
+                    DomainSearchPhotosResponse(1, dataSize, photos)
                 )
             )
 
@@ -144,9 +132,13 @@ class DashBoardViewModelTest {
             val query = "test"
             val page = 1
             val errorMessage = "Error"
+
+            coEvery { searchPhotos(query,page,any()) } returns flowOf(Resource.Error(errorMessage,
+                DomainSearchPhotosResponse(1,1, emptyList())))
+
             coEvery { searchPhotos(query, page, any()) } returns flowOf(
                 Resource.Error(
-                    errorMessage
+                    errorMessage, DomainSearchPhotosResponse(1,1, emptyList())
                 )
             )
 

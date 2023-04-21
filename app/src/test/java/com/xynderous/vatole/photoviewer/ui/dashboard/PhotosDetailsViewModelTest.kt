@@ -1,27 +1,21 @@
 package com.xynderous.vatole.photoviewer.ui.dashboard
 
-import MockTestUtil
+import MockTestUtil.Companion.createPhotoUrls
+import MockTestUtil.Companion.createUser
 import androidx.lifecycle.SavedStateHandle
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
 import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsState
 import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsViewModel
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -45,7 +39,7 @@ class PhotoDetailsViewModelTest {
     @Test
     fun `loadPhotosById should update photoDetails with data state on success`() = runBlocking {
         // Mock the success response from the ImageDescription use case
-        val mockData = mockk<PhotoModel>()
+        val mockData = mockk<DomainPhotoModel>()
         coEvery { mockImageDescription(any(), any()) } returns flowOf(Resource.Success(mockData))
 
         // Call the method under test
@@ -61,7 +55,14 @@ class PhotoDetailsViewModelTest {
     fun `loadPhotosById should update photoDetails with error state on error`() = runBlocking {
         // Mock the error response from the ImageDescription use case
         val mockMessage = "Something went wrong"
-        coEvery { mockImageDescription(any(), any()) } returns flowOf(Resource.Error(mockMessage))
+        coEvery { mockImageDescription(any(), any()) } returns flowOf(Resource.Error(mockMessage, DomainPhotoModel(id = "1",
+            created_at = "2016-05-03T11:00:28-04:00",
+            color = "#60544D",
+            description = "A man drinking a coffee.",
+            alt_description = "",
+            urls = createPhotoUrls(),
+            user = createUser(1))
+        ))
 
         // Call the method under test
         viewModel.loadPhotosById("123")

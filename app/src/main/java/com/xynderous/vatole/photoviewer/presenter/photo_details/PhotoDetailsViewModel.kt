@@ -45,11 +45,8 @@ class PhotoDetailsViewModel @Inject constructor(
 
     private fun fetchPhotos(id: String,page:Int) {
         viewModelScope.launch {
-            imageDescription(id,pageNumber).collect { dataState->
+            imageDescription(id,page).collect { dataState->
                 when (dataState) {
-                    is Resource.Loading -> {
-                        _photoDetails.value = PhotoDetailsState.Loading
-                    }
                     is Resource.Error -> {
                         _photoDetails.value = PhotoDetailsState.Error(dataState.message ?: "")
                     }

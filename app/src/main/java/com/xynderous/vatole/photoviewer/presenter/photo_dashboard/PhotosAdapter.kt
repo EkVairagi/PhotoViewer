@@ -7,17 +7,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.xynderous.vatole.photoviewer.R
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
 import com.xynderous.vatole.photoviewer.databinding.PhotosLayoutBinding
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 
-class PhotosAdapter(val onPhotoSelected: (photo: PhotoModel, position: Int) -> Unit) :
+class PhotosAdapter(val onPhotoSelected: (photo: DomainPhotoModel, position: Int) -> Unit) :
     RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 
-    private val differCallBack = object : DiffUtil.ItemCallback<PhotoModel>() {
-        override fun areItemsTheSame(oldItem: PhotoModel, newItem: PhotoModel): Boolean {
+    private val differCallBack = object : DiffUtil.ItemCallback<DomainPhotoModel>() {
+        override fun areItemsTheSame(oldItem: DomainPhotoModel, newItem: DomainPhotoModel): Boolean {
             return oldItem.id == newItem.id
         }
-        override fun areContentsTheSame(oldItem: PhotoModel, newItem: PhotoModel): Boolean {
+        override fun areContentsTheSame(oldItem: DomainPhotoModel, newItem: DomainPhotoModel): Boolean {
             return oldItem == newItem
         }
     }
@@ -30,14 +30,13 @@ class PhotosAdapter(val onPhotoSelected: (photo: PhotoModel, position: Int) -> U
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         holder.bind(differ.currentList[position], position)
     }
 
     override fun getItemCount(): Int = differ.currentList.size
     inner class ViewHolder(private val itemBinding: PhotosLayoutBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(photoModel: PhotoModel, position: Int) {
+        fun bind(photoModel: DomainPhotoModel, position: Int) {
             itemBinding.apply {
                 imgPhoto.load(photoModel.urls?.thumb) {
                     placeholder(R.color.white)

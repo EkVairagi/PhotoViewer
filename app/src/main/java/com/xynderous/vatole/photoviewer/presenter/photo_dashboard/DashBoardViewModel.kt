@@ -1,24 +1,19 @@
 package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.PAGE_NUMBER_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.SEARCH_QUERY_KEY
 import com.xynderous.vatole.photoviewer.utils.Resource
-import com.xynderous.vatole.photoviewer.utils.toDomainPhotos
-import com.xynderous.vatole.photoviewer.utils.toDomainSearchPhotos
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,11 +77,8 @@ class DashBoardViewModel @Inject constructor(
             _photoDetails.value = PhotoState.Loading
             fetchPopularImages(page, AppConstants.QUERY_PAGE_SIZE, "popular").collect { dataState ->
                 when (dataState) {
-                    is Resource.Loading -> {
-                        // Handle loading state
-                    }
                     is Resource.Success -> {
-                        val newData = dataState.data ?: emptyList()
+                        val newData = dataState.data
                         _photoDetails.value = PhotoState.Data(currentData + newData)
                     }
                     is Resource.Error -> {
@@ -105,12 +97,12 @@ class DashBoardViewModel @Inject constructor(
             _photoDetails.value = PhotoState.Loading
             searchPhotosCases(query, page, AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
                 when (dataState) {
-                    is Resource.Loading -> {
-                        // Handle loading state
-                    }
                     is Resource.Success -> {
-                        val newData = dataState.data?.photosList.orEmpty()
-                        val updatedList = currentData + newData
+                        val newData = dataState.data.results
+
+
+
+                        val updatedList = (currentData ?: listOf()) + (newData ?: listOf())
                         _photoDetails.value = PhotoState.Data(updatedList)
                     }
                     is Resource.Error -> {

@@ -53,10 +53,10 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
                     }
                     is PhotoDetailsState.Data -> {
                         binding?.pbLoading?.makeVisibleIf(false)
-                        binding?.tvUserName?.text = state.photos?.user?.name
-                        binding?.tvLocation?.text = state.photos?.user?.location
-                        binding?.tvDesc?.text = state.photos?.alt_description
-                        binding?.photoView?.load(state.photos?.urls?.full)
+                        binding?.tvUserName?.text = state.photos.user?.name
+                        binding?.tvLocation?.text = state.photos.user?.location
+                        binding?.tvDesc?.text = state.photos.alt_description
+                        binding?.photoView?.load(state.photos.urls?.full)
                     }
                     is PhotoDetailsState.Error -> {
                         binding?.pbLoading?.makeVisibleIf(false)

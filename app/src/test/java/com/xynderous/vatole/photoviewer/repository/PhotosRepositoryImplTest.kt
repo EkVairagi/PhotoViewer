@@ -2,8 +2,7 @@ package com.xynderous.vatole.photoviewer.repository
 
 import MockTestUtil
 import com.xynderous.vatole.photoviewer.data.api.PhotosAPI
-import com.xynderous.vatole.photoviewer.data.model.PhotoModel
-import com.xynderous.vatole.photoviewer.data.model.SearchPhotosResponse
+import com.xynderous.vatole.photoviewer.data.model.DomainSearchPhotosResponse
 import com.xynderous.vatole.photoviewer.data.repositories.PhotosRepositoryImpl
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.coEvery
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -62,7 +60,6 @@ class PhotosRepositoryImplTest {
 
         // Then
         verify { runBlocking { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } }
-        assertTrue(actualPhotos[0] is Resource.Loading)
         assertTrue(actualPhotos[1] is Resource.Success)
     }
 
@@ -108,7 +105,7 @@ class PhotosRepositoryImplTest {
         val pageNumber = 1
         val pageSize = 10
         val expectedException = Exception("API call failed")
-        coEvery { photosApi.searchPhotos(query, pageNumber, pageSize) } returns SearchPhotosResponse(
+        coEvery { photosApi.searchPhotos(query, pageNumber, pageSize) } returns DomainSearchPhotosResponse(
             0, 0, emptyList(),
         )
         val result = photosRepository.searchPhotos(query, pageNumber, pageSize).toList()
@@ -140,7 +137,7 @@ class PhotosRepositoryImplTest {
         coEvery { photosApi.imageDescription(id, pageNumber) } throws expectedException
 
 
-        coEvery { photosApi.imageDescription(id, pageNumber) } returns PhotoModel()
+        //coEvery { photosApi.imageDescription(id, pageNumber) } returns DomainPhotoModel()
 
         // When
         val result = photosRepository.imageDescription(id, pageNumber).toList()
