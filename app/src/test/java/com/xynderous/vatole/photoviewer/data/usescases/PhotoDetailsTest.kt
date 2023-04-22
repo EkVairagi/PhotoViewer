@@ -2,6 +2,7 @@ package com.xynderous.vatole.photoviewer.data.usescases
 
 
 import MockTestUtil
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
 import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.repositories.PhotosRepository
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
@@ -43,7 +44,7 @@ class ImageDescriptionTest {
         // Given
         val id = "1NCcWi24FRs"
         val pageNumber = 1
-        val expected: Resource<PhotoModel> = Resource.Error("Error message")
+        val expected: Resource<DomainPhotoModel> = Resource.Error("Error message")
 
         coEvery { repository.imageDescription(id, pageNumber) } returns flowOf(expected)
 

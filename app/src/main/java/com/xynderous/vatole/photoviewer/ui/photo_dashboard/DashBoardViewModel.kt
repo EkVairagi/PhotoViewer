@@ -1,11 +1,13 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
+package com.xynderous.vatole.photoviewer.ui.photo_dashboard
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
+import com.xynderous.vatole.photoviewer.ui.base.BaseState
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.PAGE_NUMBER_KEY
 import com.xynderous.vatole.photoviewer.utils.AppConstants.Companion.SEARCH_QUERY_KEY
@@ -24,8 +26,10 @@ class DashBoardViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _photoDetails = MutableStateFlow<PhotoState>(PhotoState.Loading)
-    val photoDetails: StateFlow<PhotoState> = _photoDetails
+    private val _photoDetails = MutableStateFlow<BaseState>(BaseState.Loading)
+    val photoDetails: StateFlow<BaseState> = _photoDetails
+
+
     var pageNumber: Int = 1
     var searchQuery: String = ""
 
@@ -50,10 +54,8 @@ class DashBoardViewModel @Inject constructor(
 
 
     fun fetchPhotosAPI() {
-        if (_photoDetails.value == PhotoState.Loading) {
-            viewModelScope.launch(Dispatchers.IO) {
-                fetchPhotos(pageNumber)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchPhotos(pageNumber)
         }
     }
 
@@ -73,40 +75,42 @@ class DashBoardViewModel @Inject constructor(
 
     fun fetchPhotos(page: Int) {
         viewModelScope.launch {
-            val currentData = (_photoDetails.value as? PhotoState.Data)?.photos ?: emptyList()
-            _photoDetails.value = PhotoState.Loading
+
+            val currentData = (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos ?: emptyList()
+            _photoDetails.value = BaseState.Loading
             fetchPopularImages(page, AppConstants.QUERY_PAGE_SIZE, "popular").collect { dataState ->
                 when (dataState) {
                     is Resource.Success -> {
                         val newData = dataState.data
-                        _photoDetails.value = PhotoState.Data(currentData + newData)
+                        _photoDetails.value = BaseState.Data(currentData + newData)
+                    }
+                    is Resource.Loading -> {
+                        _photoDetails.value = BaseState.Loading
                     }
                     is Resource.Error -> {
-                        _photoDetails.value = PhotoState.Error(dataState.message.orEmpty())
+                        _photoDetails.value = BaseState.Error(dataState.message ?: "")
                     }
                 }
             }
         }
     }
 
-
-
     fun searchPhotos(page: Int, query: String) {
         viewModelScope.launch {
-            val currentData = if (page > 1) (_photoDetails.value as? PhotoState.Data)?.photos.orEmpty() else emptyList()
-            _photoDetails.value = PhotoState.Loading
+            val currentData = if (page > 1) (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos else emptyList()
+            _photoDetails.value = BaseState.Loading
             searchPhotosCases(query, page, AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
                 when (dataState) {
                     is Resource.Success -> {
                         val newData = dataState.data.results
-
-
-
                         val updatedList = (currentData ?: listOf()) + (newData ?: listOf())
-                        _photoDetails.value = PhotoState.Data(updatedList)
+                        _photoDetails.value = BaseState.Data(updatedList)
+                    }
+                    is Resource.Loading -> {
+
                     }
                     is Resource.Error -> {
-                        _photoDetails.value = PhotoState.Error(dataState.message.orEmpty())
+                        _photoDetails.value = BaseState.Error(dataState.message.orEmpty())
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_details
+package com.xynderous.vatole.photoviewer.ui.photo_details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
+import com.xynderous.vatole.photoviewer.ui.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.FragmentPhotoDetailsBinding
+import com.xynderous.vatole.photoviewer.ui.base.BaseState
 import com.xynderous.vatole.photoviewer.utils.makeVisibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,17 +50,18 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
         lifecycle.coroutineScope.launchWhenCreated {
             viewModel.photoDetails.collect { state->
                 when (state) {
-                    is PhotoDetailsState.Loading -> {
+                    is BaseState.Loading -> {
                         binding?.pbLoading?.makeVisibleIf(true)
                     }
-                    is PhotoDetailsState.Data -> {
+                    is BaseState.Data<*> -> {
                         binding?.pbLoading?.makeVisibleIf(false)
-                        binding?.tvUserName?.text = state.photos.user?.name
-                        binding?.tvLocation?.text = state.photos.user?.location
-                        binding?.tvDesc?.text = state.photos.alt_description
-                        binding?.photoView?.load(state.photos.urls?.full)
+                        val photos = state.photos as DomainPhotoModel
+                        binding?.tvUserName?.text = photos.user?.name
+                        binding?.tvLocation?.text = photos.user?.location
+                        binding?.tvDesc?.text = photos.alt_description
+                        binding?.photoView?.load(photos.urls?.full)
                     }
-                    is PhotoDetailsState.Error -> {
+                    is BaseState.Error -> {
                         binding?.pbLoading?.makeVisibleIf(false)
                         Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                     }

@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
+package com.xynderous.vatole.photoviewer.ui.photo_dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,8 +16,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xynderous.vatole.photoviewer.R
-import com.xynderous.vatole.photoviewer.presenter.base.BaseFragment
+import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
+import com.xynderous.vatole.photoviewer.ui.base.BaseFragment
 import com.xynderous.vatole.photoviewer.databinding.DashboardFragmentBinding
+import com.xynderous.vatole.photoviewer.ui.base.BaseState
 import com.xynderous.vatole.photoviewer.utils.makeVisibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,18 +52,19 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
     private fun initObserver() {
         lifecycle.coroutineScope.launchWhenCreated {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.photoDetails.collect {state->
-
+                viewModel.photoDetails.collect { state->
                     when (state) {
-                        is PhotoState.Loading -> {
+                        is BaseState.Loading -> {
                             binding?.pbLoading?.makeVisibleIf(true)
                         }
-                        is PhotoState.Data -> {
+                        is BaseState.Data<*> -> {
                             binding?.pbLoading?.makeVisibleIf(false)
-                            photosAdapter.differ.submitList(state.photos)
+
+                            val photos = state.photos as List<DomainPhotoModel>
+                            photosAdapter.differ.submitList(photos)
 
                         }
-                        is PhotoState.Error -> {
+                        is BaseState.Error -> {
                             binding?.pbLoading?.makeVisibleIf(false)
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                         }

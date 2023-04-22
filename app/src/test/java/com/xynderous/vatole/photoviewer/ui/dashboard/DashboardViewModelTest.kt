@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.xynderous.vatole.photoviewer.data.model.DomainSearchPhotosResponse
 import com.xynderous.vatole.photoviewer.domain.usecases.FetchPopularImages
 import com.xynderous.vatole.photoviewer.domain.usecases.SearchPhotos
-import com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardViewModel
+import com.xynderous.vatole.photoviewer.ui.photo_dashboard.DashBoardViewModel
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.*

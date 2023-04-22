@@ -1,10 +1,11 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_details
+package com.xynderous.vatole.photoviewer.ui.photo_details
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
+import com.xynderous.vatole.photoviewer.ui.base.BaseState
 import com.xynderous.vatole.photoviewer.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +19,8 @@ class PhotoDetailsViewModel @Inject constructor(
     private val imageDescription: ImageDescription,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _photoDetails = MutableStateFlow<PhotoDetailsState>(PhotoDetailsState.Loading)
-    val photoDetails: StateFlow<PhotoDetailsState> = _photoDetails
+    private val _photoDetails = MutableStateFlow<BaseState>(BaseState.Loading)
+    val photoDetails: StateFlow<BaseState> = _photoDetails
 
     var pageNumber: Int = 1
 
@@ -48,10 +49,13 @@ class PhotoDetailsViewModel @Inject constructor(
             imageDescription(id,page).collect { dataState->
                 when (dataState) {
                     is Resource.Error -> {
-                        _photoDetails.value = PhotoDetailsState.Error(dataState.message ?: "")
+                        _photoDetails.value = BaseState.Error(dataState.message ?: "")
+                    }
+                    is Resource.Loading -> {
+                        _photoDetails.value = BaseState.Loading
                     }
                     is Resource.Success -> {
-                        _photoDetails.value = PhotoDetailsState.Data(dataState.data)
+                        _photoDetails.value = BaseState.Data(dataState.data)
                     }
                 }
 

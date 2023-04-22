@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.xynderous.vatole.photoviewer.presenter.photo_dashboard.DashBoardFragment"
+        android:name="com.xynderous.vatole.photoviewer.ui.photo_dashboard.DashBoardFragment"
         android:label="Home" >
         <action
             android:id="@+id/action_dashboardFragment_to_photosDetailsFragment"
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/photosDetailsFragment"
-        android:name="com.xynderous.vatole.photoviewer.presenter.photo_details.PhotosDetailsFragment"
+        android:name="com.xynderous.vatole.photoviewer.ui.photo_details.PhotosDetailsFragment"
         android:label="Details" >
         <action
             android:id="@+id/action_photosDetailsFragment_to_dashboardFragment"

@@ -5,8 +5,8 @@ import MockTestUtil.Companion.createUser
 import androidx.lifecycle.SavedStateHandle
 import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
 import com.xynderous.vatole.photoviewer.domain.usecases.ImageDescription
-import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsState
-import com.xynderous.vatole.photoviewer.presenter.photo_details.PhotoDetailsViewModel
+import com.xynderous.vatole.photoviewer.ui.base.BaseState
+import com.xynderous.vatole.photoviewer.ui.photo_details.PhotoDetailsViewModel
 import com.xynderous.vatole.photoviewer.utils.AppConstants
 import com.xynderous.vatole.photoviewer.utils.Resource
 import io.mockk.coEvery
@@ -46,7 +46,7 @@ class PhotoDetailsViewModelTest {
         viewModel.loadPhotosById("123")
 
         // Assert that photoDetails is updated with the success state and data
-        val expectedState = PhotoDetailsState.Data(mockData)
+        val expectedState = BaseState.Data(mockData)
         val actualState = viewModel.photoDetails.first()
 
     }
@@ -68,7 +68,7 @@ class PhotoDetailsViewModelTest {
         viewModel.loadPhotosById("123")
 
         // Assert that photoDetails is updated with the error state and message
-        val expectedState = PhotoDetailsState.Error(mockMessage)
+        val expectedState = BaseState.Error(mockMessage)
         val actualState = viewModel.photoDetails.first()
     }
 

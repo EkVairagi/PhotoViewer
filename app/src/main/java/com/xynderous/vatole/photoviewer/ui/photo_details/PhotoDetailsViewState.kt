@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_details
+package com.xynderous.vatole.photoviewer.ui.photo_details
 
 import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 

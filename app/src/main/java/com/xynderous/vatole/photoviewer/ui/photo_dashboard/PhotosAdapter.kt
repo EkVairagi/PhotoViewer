@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter.photo_dashboard
+package com.xynderous.vatole.photoviewer.ui.photo_dashboard
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -42,6 +42,7 @@ class PhotosAdapter(val onPhotoSelected: (photo: DomainPhotoModel, position: Int
                     placeholder(R.color.white)
                     crossfade(true)
                 }
+                txtCaption.text = photoModel.user?.name
                 cardPhoto.setOnClickListener {
                     onPhotoSelected(photoModel, position)
                 }

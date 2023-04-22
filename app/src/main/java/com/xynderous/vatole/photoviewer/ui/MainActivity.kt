@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.presenter
+package com.xynderous.vatole.photoviewer.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
