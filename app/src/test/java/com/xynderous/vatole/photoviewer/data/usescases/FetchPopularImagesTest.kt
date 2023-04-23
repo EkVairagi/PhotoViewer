@@ -21,13 +21,14 @@ class FetchPopularImagesTest {
 
     @Test
     fun `fetch popular images - success`() = runBlockingTest {
-        // Given
-        // When
         val photos = MockTestUtil.createPhotos(10)
-        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(Resource.Success(photos))
+        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(
+            Resource.Success(
+                photos
+            )
+        )
         val result = useCase(1, 10, "popular").toList()
 
-        // Then
         verify { repository.loadPhotos(1, 10, "popular") }
         assertTrue(result.size == 1)
         assertTrue(result[0] is Resource.Success)
@@ -36,14 +37,15 @@ class FetchPopularImagesTest {
 
     @Test
     fun `fetch popular images - error`() = runBlockingTest {
-        // Given
         val errorMsg = "Error fetching popular images"
-        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(Resource.Error(errorMsg))
+        coEvery { repository.loadPhotos(any(), any(), any()) } returns flowOf(
+            Resource.Error(
+                errorMsg
+            )
+        )
 
-        // When
         val result = useCase(1, 10, "popular").toList()
 
-        // Then
         verify { repository.loadPhotos(1, 10, "popular") }
         assertTrue(result.size == 1)
         assertTrue(result[0] is Resource.Error)

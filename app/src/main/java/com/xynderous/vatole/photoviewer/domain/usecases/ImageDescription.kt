@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 
 class ImageDescription @Inject constructor(private val repository: PhotosRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         id: String,
         pageNumber: Int
     ): Flow<Resource<DomainPhotoModel>> {

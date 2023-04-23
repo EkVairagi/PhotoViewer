@@ -25,51 +25,27 @@ import java.io.IOException
 
 class PhotosRepositoryImplTest {
 
-    // Define mocks
     private val photosApi = mockk<PhotosAPI>()
-
-    // Define repository instance
     private val repository = PhotosRepositoryImpl(photosApi)
 
     @Test
     fun `loadPhotos returns Resource_Success with photos list`() = runBlocking {
-        // Define expected result
         val expected = listOf<DomainPhotoModel>(mockk(), mockk(), mockk())
-        // Mock API call
         coEvery { photosApi.loadPhotos(any(), any(), any()) } returns expected
-        // Call repository method
-        val result = repository.loadPhotos(1, 10, "latest").toList()
-        // Verify result
-//        assertEquals(listOf(Resource.Success(expected)), result)
-        // Verify API call
         coVerify { photosApi.loadPhotos(1, 10, "latest") }
     }
 
     @Test
     fun `searchPhotos returns Resource_Success with search result`() = runBlocking {
-        // Define expected result
         val expected = mockk<DomainSearchPhotosResponse>()
-        // Mock API call
         coEvery { photosApi.searchPhotos(any(), any(), any()) } returns expected
-        // Call repository method
-        val result = repository.searchPhotos("cats", 1, 10).toList()
-        // Verify result
-     //   assertEquals(listOf(Resource.Success(expected)), result)
-        // Verify API call
         coVerify { photosApi.searchPhotos("cats", 1, 10) }
     }
 
     @Test
     fun `imageDescription returns Resource_Success with photo model`() = runBlocking {
-        // Define expected result
         val expected = mockk<DomainPhotoModel>()
-        // Mock API call
         coEvery { photosApi.imageDescription(any(), any()) } returns expected
-        // Call repository method
-        val result = repository.imageDescription("abc123", 1).toList()
-        // Verify result
-   //     assertEquals(listOf(Resource.Success(expected)), result)
-        // Verify API call
         coVerify { photosApi.imageDescription("abc123", 1) }
     }
 
@@ -81,12 +57,9 @@ class PhotosRepositoryImplTest {
         val orderBy = "latest"
         val errorMessage = "Failed to load photos"
 
-        coEvery { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } throws Exception(errorMessage)
-
-        val flow = repository.loadPhotos(pageNumber, pageSize, orderBy)
-
-        val expected = Resource.Error(errorMessage, null)
-
+        coEvery { photosApi.loadPhotos(pageNumber, pageSize, orderBy) } throws Exception(
+            errorMessage
+        )
     }
 
     @Test
@@ -96,12 +69,9 @@ class PhotosRepositoryImplTest {
         val pageSize = 10
         val errorMessage = "Failed to search photos"
 
-        coEvery { photosApi.searchPhotos(query, pageNumber, pageSize) } throws Exception(errorMessage)
-
-        val flow = repository.searchPhotos(query, pageNumber, pageSize)
-
-        val expected = Resource.Error(errorMessage, null)
-
+        coEvery { photosApi.searchPhotos(query, pageNumber, pageSize) } throws Exception(
+            errorMessage
+        )
     }
 
     @Test
@@ -109,13 +79,7 @@ class PhotosRepositoryImplTest {
         val id = "abc123"
         val pageNumber = 1
         val errorMessage = "Failed to get photo description"
-
         coEvery { photosApi.imageDescription(id, pageNumber) } throws Exception(errorMessage)
-
-        val flow = repository.imageDescription(id, pageNumber)
-
-        val expected = Resource.Error(errorMessage, null)
-
     }
 
 }

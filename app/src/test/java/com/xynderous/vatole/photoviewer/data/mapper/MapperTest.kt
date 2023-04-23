@@ -1,16 +1,11 @@
 package com.xynderous.vatole.photoviewer.data.mapper
 
-import com.xynderous.vatole.photoviewer.data.model.DomainPhotoModel
-import com.xynderous.vatole.photoviewer.data.model.DomainPhotoUrlsModel
-import com.xynderous.vatole.photoviewer.data.model.DomainUserModel
 import com.xynderous.vatole.photoviewer.domain.model.PhotoModel
 import com.xynderous.vatole.photoviewer.domain.model.PhotoUrlsModel
-import com.xynderous.vatole.photoviewer.domain.model.SearchPhotosResponse
 import com.xynderous.vatole.photoviewer.domain.model.UserModel
-import com.xynderous.vatole.photoviewer.utils.toDomainPhotoUrls
-import com.xynderous.vatole.photoviewer.utils.toDomainPhotos
-import com.xynderous.vatole.photoviewer.utils.toDomainSearchPhoto
-import com.xynderous.vatole.photoviewer.utils.toDomainUser
+import com.xynderous.vatole.photoviewer.data.mappers.toDomainPhotoUrls
+import com.xynderous.vatole.photoviewer.data.mappers.toDomainPhotos
+import com.xynderous.vatole.photoviewer.data.mappers.toDomainUser
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -126,7 +121,6 @@ class MapperTest {
         assertEquals("", domainUserModel.location)
         assertEquals("", domainUserModel.name)
     }
-
 
 
 }

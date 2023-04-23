@@ -48,7 +48,7 @@ class PhotosDetailsFragment : BaseFragment<FragmentPhotoDetailsBinding>() {
 
     private fun initObserver() {
         lifecycle.coroutineScope.launchWhenCreated {
-            viewModel.photoDetails.collect { state->
+            viewModel.photoDetails.collect { state ->
                 when (state) {
                     is BaseState.Loading -> {
                         binding?.pbLoading?.makeVisibleIf(true)

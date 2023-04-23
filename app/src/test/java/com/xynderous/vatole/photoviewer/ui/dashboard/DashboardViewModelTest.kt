@@ -51,12 +51,10 @@ class DashBoardViewModelTest {
 
     @Test
     fun `fetchPhotosAPI should fetch popular images from repository`() = runBlockingTest {
-        // Given
         val dataSize = 10
         val photos = MockTestUtil.createPhotos(dataSize)
         coEvery { fetchPopularPhotos(any(), any(), any()) } returns flowOf(Resource.Success(photos))
 
-        // When
         viewModel.fetchPhotosAPI()
 
 
@@ -66,15 +64,13 @@ class DashBoardViewModelTest {
     @Test
     fun `fetchPhotos should update the photoDetails value with loading and then error state`() =
         runBlockingTest {
-            // Given
             val page = 1
             val errorMessage = "Error"
             coEvery { fetchPopularPhotos(page, any(), any()) } returns flowOf(
                 Resource.Error(
-                    errorMessage, emptyList())
+                    errorMessage, emptyList()
+                )
             )
-
-            // When
             viewModel.fetchPhotos(page)
 
         }
@@ -82,34 +78,24 @@ class DashBoardViewModelTest {
 
     @Test
     fun `restoreState should get page number from SavedStateHandle`() {
-        // Set up MockK for SavedStateHandle to return a saved page number
         val savedPageNumber = 5
         every { savedStateHandle.get<Int>(AppConstants.PAGE_NUMBER_KEY) } returns savedPageNumber
 
-        // Call the method under test
         viewModel.restoreState(mockk(relaxed = true))
-
-        // Assert that the page number was retrieved from the SavedStateHandle and set in the viewmodel
     }
 
 
     @Test
     fun `restoreState should get query from SavedStateHandle`() {
-        // Set up MockK for SavedStateHandle to return a saved page number
         val query = "cat"
         every { savedStateHandle.get<String>(AppConstants.PAGE_NUMBER_KEY) } returns query
-
-        // Call the method under test
         viewModel.restoreState(mockk(relaxed = true))
-
-        // Assert that the page number was retrieved from the SavedStateHandle and set in the viewmodel
     }
 
 
     @Test
     fun `searchPhotos should update the photoDetails value with loading and then success state`() =
         runBlockingTest {
-            // Given
             val query = "test"
             val page = 1
             val dataSize = 10
@@ -119,8 +105,6 @@ class DashBoardViewModelTest {
                     DomainSearchPhotosResponse(1, dataSize, photos)
                 )
             )
-
-            // When
             viewModel.searchPhotos(query)
 
         }
@@ -128,24 +112,23 @@ class DashBoardViewModelTest {
     @Test
     fun `searchPhotos should update the photoDetails value with loading and then error state`() =
         runBlockingTest {
-            // Given
             val query = "test"
             val page = 1
             val errorMessage = "Error"
 
-            coEvery { searchPhotos(query,page,any()) } returns flowOf(Resource.Error(errorMessage,
-                DomainSearchPhotosResponse(1,1, emptyList())))
-
             coEvery { searchPhotos(query, page, any()) } returns flowOf(
                 Resource.Error(
-                    errorMessage, DomainSearchPhotosResponse(1,1, emptyList())
+                    errorMessage,
+                    DomainSearchPhotosResponse(1, 1, emptyList())
                 )
             )
 
-            // When
+            coEvery { searchPhotos(query, page, any()) } returns flowOf(
+                Resource.Error(
+                    errorMessage, DomainSearchPhotosResponse(1, 1, emptyList())
+                )
+            )
             viewModel.searchPhotos(query)
-
-            // Then
         }
 
 }

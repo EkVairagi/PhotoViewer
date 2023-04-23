@@ -14,10 +14,17 @@ class PhotosAdapter(val onPhotoSelected: (photo: DomainPhotoModel, position: Int
     RecyclerView.Adapter<PhotosAdapter.ViewHolder>() {
 
     private val differCallBack = object : DiffUtil.ItemCallback<DomainPhotoModel>() {
-        override fun areItemsTheSame(oldItem: DomainPhotoModel, newItem: DomainPhotoModel): Boolean {
+        override fun areItemsTheSame(
+            oldItem: DomainPhotoModel,
+            newItem: DomainPhotoModel
+        ): Boolean {
             return oldItem.id == newItem.id
         }
-        override fun areContentsTheSame(oldItem: DomainPhotoModel, newItem: DomainPhotoModel): Boolean {
+
+        override fun areContentsTheSame(
+            oldItem: DomainPhotoModel,
+            newItem: DomainPhotoModel
+        ): Boolean {
             return oldItem == newItem
         }
     }

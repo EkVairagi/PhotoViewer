@@ -29,7 +29,7 @@ class PhotosRepositoryImpl(private val photosApi: PhotosAPI) : PhotosRepository 
         pageSize: Int
     ): Flow<Resource<DomainSearchPhotosResponse>> {
         return flow {
-            //emit(Resource.Loading(null))
+            emit(Resource.Loading())
             val photos = photosApi.searchPhotos(query, pageNumber, pageSize)
             emit(Resource.Success(photos))
         }
@@ -37,7 +37,7 @@ class PhotosRepositoryImpl(private val photosApi: PhotosAPI) : PhotosRepository 
 
     override fun imageDescription(id: String, pageNumber: Int): Flow<Resource<DomainPhotoModel>> {
         return flow {
-            //emit(Resource.Loading(null))
+            emit(Resource.Loading())
             val photoModel = photosApi.imageDescription(id, pageNumber)
             emit(Resource.Success(photoModel))
         }

@@ -52,7 +52,7 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
     private fun initObserver() {
         lifecycle.coroutineScope.launchWhenCreated {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.photoDetails.collect { state->
+                viewModel.photoDetails.collect { state ->
                     when (state) {
                         is BaseState.Loading -> {
                             binding?.pbLoading?.makeVisibleIf(true)
@@ -66,7 +66,8 @@ class DashBoardFragment : BaseFragment<DashboardFragmentBinding>() {
                         }
                         is BaseState.Error -> {
                             binding?.pbLoading?.makeVisibleIf(false)
-                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }

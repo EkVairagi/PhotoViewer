@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FetchPopularImages @Inject constructor(private val repository: PhotosRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         pageNumber: Int,
         pageSize: Int,
         orderBy: String

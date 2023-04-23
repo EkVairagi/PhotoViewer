@@ -1,4 +1,4 @@
-package com.xynderous.vatole.photoviewer.utils
+package com.xynderous.vatole.photoviewer.data.mappers
 
 import com.xynderous.vatole.photoviewer.data.model.*
 import com.xynderous.vatole.photoviewer.domain.model.PhotoModel

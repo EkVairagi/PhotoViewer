@@ -76,7 +76,9 @@ class DashBoardViewModel @Inject constructor(
     fun fetchPhotos(page: Int) {
         viewModelScope.launch {
 
-            val currentData = (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos ?: emptyList()
+            val currentData =
+                (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos
+                    ?: emptyList()
             _photoDetails.value = BaseState.Loading
             fetchPopularImages(page, AppConstants.QUERY_PAGE_SIZE, "popular").collect { dataState ->
                 when (dataState) {
@@ -97,7 +99,8 @@ class DashBoardViewModel @Inject constructor(
 
     fun searchPhotos(page: Int, query: String) {
         viewModelScope.launch {
-            val currentData = if (page > 1) (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos else emptyList()
+            val currentData =
+                if (page > 1) (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos else emptyList()
             _photoDetails.value = BaseState.Loading
             searchPhotosCases(query, page, AppConstants.QUERY_PAGE_SIZE).collect { dataState ->
                 when (dataState) {
@@ -116,7 +119,6 @@ class DashBoardViewModel @Inject constructor(
             }
         }
     }
-
 
 
     override fun onCleared() {

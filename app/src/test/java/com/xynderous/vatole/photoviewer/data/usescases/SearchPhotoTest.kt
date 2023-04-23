@@ -21,21 +21,17 @@ class SearchPhotosTest {
 
     @Test
     fun `invoke should return success`() = runBlocking {
-        // Given
         val query = "flowers"
         val pageNumber = 1
         val pageSize = 10
         val expected = Resource.Success(MockTestUtil.createSearchPhotosResponse())
         coEvery { repository.searchPhotos(query, pageNumber, pageSize) } returns flowOf(expected)
 
-        // When
         val result = useCase(query, pageNumber, pageSize).first()
 
-        // Then
         assertEquals(expected, result)
         coVerify { repository.searchPhotos(query, pageNumber, pageSize) }
     }
-
 
 
 }

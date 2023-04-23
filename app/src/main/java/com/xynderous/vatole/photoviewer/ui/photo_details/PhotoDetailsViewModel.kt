@@ -26,7 +26,7 @@ class PhotoDetailsViewModel @Inject constructor(
 
     fun loadPhotosById(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchPhotos(id,pageNumber)
+            fetchPhotos(id, pageNumber)
         }
     }
 
@@ -44,9 +44,9 @@ class PhotoDetailsViewModel @Inject constructor(
         pageNumber = savedInstanceState.getInt(AppConstants.PAGE_NUMBER_KEY)
     }
 
-    private fun fetchPhotos(id: String,page:Int) {
+    private fun fetchPhotos(id: String, page: Int) {
         viewModelScope.launch {
-            imageDescription(id,page).collect { dataState->
+            imageDescription(id, page).collect { dataState ->
                 when (dataState) {
                     is Resource.Error -> {
                         _photoDetails.value = BaseState.Error(dataState.message ?: "")
