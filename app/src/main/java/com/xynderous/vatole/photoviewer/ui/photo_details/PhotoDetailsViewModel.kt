@@ -25,9 +25,7 @@ class PhotoDetailsViewModel @Inject constructor(
     var pageNumber: Int = 1
 
     fun loadPhotosById(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            fetchPhotos(id, pageNumber)
-        }
+        fetchPhotos(id, pageNumber)
     }
 
     init {
@@ -45,7 +43,7 @@ class PhotoDetailsViewModel @Inject constructor(
     }
 
     private fun fetchPhotos(id: String, page: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             imageDescription(id, page).collect { dataState ->
                 when (dataState) {
                     is Resource.Error -> {

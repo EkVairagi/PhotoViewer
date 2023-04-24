@@ -54,9 +54,7 @@ class DashBoardViewModel @Inject constructor(
 
 
     fun fetchPhotosAPI() {
-        viewModelScope.launch(Dispatchers.IO) {
-            fetchPhotos(pageNumber)
-        }
+        fetchPhotos(pageNumber)
     }
 
     fun loadMorePhotos() {
@@ -74,7 +72,7 @@ class DashBoardViewModel @Inject constructor(
     }
 
     fun fetchPhotos(page: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             val currentData =
                 (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos
@@ -98,7 +96,7 @@ class DashBoardViewModel @Inject constructor(
     }
 
     fun searchPhotos(page: Int, query: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val currentData =
                 if (page > 1) (_photoDetails.value as? BaseState.Data<List<DomainPhotoModel>>)?.photos else emptyList()
             _photoDetails.value = BaseState.Loading
